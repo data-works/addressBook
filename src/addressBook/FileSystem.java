@@ -1,21 +1,21 @@
 package addressBook;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 public class FileSystem {
-
-	public FileSystem() {
-		
-	}
 
 	public AddressBook readFile(File file) throws FileNotFoundException, IOException {
 
 		AddressBook addressBook = new AddressBook();
-
 
 		FileReader fileReader = new FileReader(file);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -35,9 +35,6 @@ public class FileSystem {
 
 			// add person to address book
 			addressBook.addPerson(person);
-
-			// empty line for readability
-			bufferedReader.readLine();
 		}
 
 		bufferedReader.close();
@@ -45,7 +42,28 @@ public class FileSystem {
 		return addressBook;
 	}
 	
-	public void saveFile(AddressBook addressBook, File file) {
+	public void saveFile(AddressBook addressBook, File file)
+			throws UnsupportedEncodingException, FileNotFoundException, IOException {
+
+		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
+
+		// save each person
+		int i = 0;
+		for(Person person : addressBook.getPersons()) {
+			writer.write(person.getFirstName() + "\n");
+			writer.write(person.getLastName() + "\n");
+			writer.write(person.getAddress() + "\n");
+			writer.write(person.getCity() + "\n");
+			writer.write(person.getState() + "\n");
+			writer.write(person.getZip() + "\n");
+			if(addressBook.getPersons().size()-1 != i) {
+				writer.write(person.getPhone() + "\n");	
+			} else {
+				writer.write(person.getPhone());	
+			}
+			i++;
+		}
 		
+		writer.close();
 	}
 }

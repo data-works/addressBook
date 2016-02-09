@@ -2,9 +2,12 @@ package addressBook.test;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,31 +15,30 @@ import org.junit.Test;
 
 import addressBook.AddressBook;
 import addressBook.FileSystem;
+import addressBook.Person;
 
 public class FileSystemTest {
 
 	FileSystem fileSystem;
+	AddressBook addressBook;
 	
 	@Before
 	public void setUp() throws Exception {
 		fileSystem = new FileSystem();
+		addressBook = new AddressBook();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		fileSystem = null;
-	}
-
-	@Test
-	public void testFileSystem() {
-		fail("Not yet implemented");
+		addressBook = null;
 	}
 
 	@Test
 	public void testReadFile() throws FileNotFoundException, IOException {
 
-		File file = new File("sampleBook.txt");
-		AddressBook addressBook = fileSystem.readFile(file);
+		File file = new File("testBooks/sampleBook.txt");
+		addressBook = fileSystem.readFile(file);
 		
 		assertEquals("First name should match", "John", addressBook.getPersons().get(0).getFirstName());
 		assertEquals("Last name should match", "Sample", addressBook.getPersons().get(0).getLastName());
@@ -54,10 +56,46 @@ public class FileSystemTest {
 		assertEquals("ZIP should match", "23456", addressBook.getPersons().get(1).getZip());
 		assertEquals("Phone should match", "234 567 8901", addressBook.getPersons().get(1).getPhone());
 	}
-
-	@Test
-	public void testSaveFile() {
-		fail("Not yet implemented");
+	
+	@Test(expected=FileNotFoundException.class)
+	public void readNonExistentFile() throws FileNotFoundException, IOException {
+		File file = new File("123456/abcde12345.txt");
+		addressBook = fileSystem.readFile(file);
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void readBrokenFile() throws IOException {
+		File file = new File("testBooks/brokenBook.txt");
+		addressBook = fileSystem.readFile(file);
 	}
 
+	@Test
+	public void testSaveFile() throws UnsupportedEncodingException, FileNotFoundException, IOException {
+		
+		// mock person and address book
+		Person person = new Person("Josh", "Sampleman", "22 Big Road", "Miami", "FL", "12890", "123 234 3456");		
+		addressBook.addPerson(person);
+		
+		File file = new File("testBooks/tempBook.txt");
+		file.delete();
+		fileSystem.saveFile(addressBook, file);
+		
+		FileReader fileReader = new FileReader(file);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		String line = null;
+
+		// assert that each value matches
+		while ((line = bufferedReader.readLine()) != null) {
+			assertEquals("First name should match", "Josh", line.trim());
+			assertEquals("Last name should match", "Sampleman", bufferedReader.readLine().trim());
+			assertEquals("Address should match", "22 Big Road", bufferedReader.readLine().trim());
+			assertEquals("City should match", "Miami", bufferedReader.readLine().trim());
+			assertEquals("State should match", "FL", bufferedReader.readLine().trim());
+			assertEquals("ZIP should match", "12890", bufferedReader.readLine().trim());
+			assertEquals("Phone should match", "123 234 3456", bufferedReader.readLine().trim());
+		}
+
+		file.delete();
+		bufferedReader.close();
+	}
 }
