@@ -13,6 +13,14 @@ import java.io.Writer;
 
 public class FileSystem {
 
+	/**
+	 * Read file.
+	 *
+	 * @param file the file
+	 * @return the address book
+	 * @throws FileNotFoundException the file not found exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public AddressBook readFile(File file) throws FileNotFoundException, IOException {
 
 		AddressBook addressBook = new AddressBook();
@@ -42,6 +50,15 @@ public class FileSystem {
 		return addressBook;
 	}
 	
+	/**
+	 * Save file.
+	 *
+	 * @param addressBook the address book
+	 * @param file the file
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 * @throws FileNotFoundException the file not found exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void saveFile(AddressBook addressBook, File file)
 			throws UnsupportedEncodingException, FileNotFoundException, IOException {
 
@@ -56,6 +73,8 @@ public class FileSystem {
 			writer.write(person.getCity() + "\n");
 			writer.write(person.getState() + "\n");
 			writer.write(person.getZip() + "\n");
+			
+			// don't add a new line if it is the last person in the address book
 			if(addressBook.getPersons().size()-1 != i) {
 				writer.write(person.getPhone() + "\n");	
 			} else {

@@ -10,6 +10,17 @@ public class Person {
 	private String zip;
 	private String phone;
 	
+	/**
+	 * Instantiates a new person.
+	 *
+	 * @param firstName the first name
+	 * @param lastName the last name
+	 * @param address the address
+	 * @param city the city
+	 * @param state the state
+	 * @param zip the zip
+	 * @param phone the phone
+	 */
 	public Person(String firstName, String lastName, String address, String city, String state, String zip,
 			String phone) {
 		this.firstName = firstName;

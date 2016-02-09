@@ -75,6 +75,7 @@ public class FileSystemTest {
 		// mock person and address book
 		Person person = new Person("Josh", "Sampleman", "22 Big Road", "Miami", "FL", "12890", "123 234 3456");		
 		addressBook.addPerson(person);
+		addressBook.addPerson(person);
 		
 		File file = new File("testBooks/tempBook.txt");
 		file.delete();
@@ -95,7 +96,7 @@ public class FileSystemTest {
 			assertEquals("Phone should match", "123 234 3456", bufferedReader.readLine().trim());
 		}
 
-		file.delete();
 		bufferedReader.close();
+		file.delete();
 	}
 }
