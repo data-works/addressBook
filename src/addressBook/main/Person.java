@@ -1,4 +1,4 @@
-package addressBook;
+package addressBook.main;
 
 public class Person {
 

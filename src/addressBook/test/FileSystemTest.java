@@ -13,9 +13,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import addressBook.AddressBook;
-import addressBook.FileSystem;
-import addressBook.Person;
+import addressBook.main.AddressBook;
+import addressBook.main.FileSystem;
+import addressBook.main.Person;
 
 public class FileSystemTest {
 
