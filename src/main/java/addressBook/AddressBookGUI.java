@@ -51,11 +51,12 @@ public class AddressBookGUI {
 		this.addressBook = addressBook;
 	}
 	
-	/*public void reportError(String message) {
+	public void reportError(String message) {
 		
-	}*/
+		
+	}
 	
-	/*public void update(Observable o, Object arg) {
+	public void update(Observable o, Object arg) {
 		
-	}*/
+	}
 }
