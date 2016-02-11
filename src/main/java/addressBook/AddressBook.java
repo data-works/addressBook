@@ -1,4 +1,4 @@
-package addressBook.main.java;
+package main.java.addressBook;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,10 +68,20 @@ public class AddressBook {
 		});
 	}
 	
+	/**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * Sets the title.
+	 *
+	 * @param title the new title
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}

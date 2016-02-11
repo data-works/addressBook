@@ -1,4 +1,4 @@
-package addressBook.main.java;
+package main.java.addressBook;
 
 import java.io.File;
 import java.io.FileNotFoundException;

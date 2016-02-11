@@ -1,4 +1,4 @@
-package addressBook.main.java;
+package main.java.addressBook;
 
 /**
  * The Class Person.

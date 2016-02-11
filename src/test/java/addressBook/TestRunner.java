@@ -1,4 +1,4 @@
-package addressBook.test.java;
+package test.java.addressBook;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
