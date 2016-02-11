@@ -1,4 +1,4 @@
-package addressBook.test;
+package addressBook.test.java;
 
 import static org.junit.Assert.*;
 
@@ -6,8 +6,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import addressBook.main.AddressBook;
-import addressBook.main.Person;
+import addressBook.main.java.AddressBook;
+import addressBook.main.java.Person;
 
 public class AddressBookTest {
 

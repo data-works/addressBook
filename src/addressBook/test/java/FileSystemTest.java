@@ -1,4 +1,4 @@
-package addressBook.test;
+package addressBook.test.java;
 
 import static org.junit.Assert.*;
 
@@ -13,9 +13,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import addressBook.main.AddressBook;
-import addressBook.main.FileSystem;
-import addressBook.main.Person;
+import addressBook.main.java.AddressBook;
+import addressBook.main.java.FileSystem;
+import addressBook.main.java.Person;
 
 public class FileSystemTest {
 
@@ -39,6 +39,8 @@ public class FileSystemTest {
 
 		File file = new File("testBooks/sampleBook.txt");
 		addressBook = fileSystem.readFile(file);
+		
+		assertEquals("Title should match", "A Sample Address Book", addressBook.getTitle());
 		
 		assertEquals("First name should match", "John", addressBook.getPersons().get(0).getFirstName());
 		assertEquals("Last name should match", "Sample", addressBook.getPersons().get(0).getLastName());
@@ -76,6 +78,7 @@ public class FileSystemTest {
 		Person person = new Person("Josh", "Sampleman", "22 Big Road", "Miami", "FL", "12890", "123 234 3456");		
 		addressBook.addPerson(person);
 		addressBook.addPerson(person);
+		addressBook.setTitle("A Sample Address Book");
 		
 		File file = new File("testBooks/tempBook.txt");
 		file.delete();
@@ -85,6 +88,40 @@ public class FileSystemTest {
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		String line = null;
 
+		assertEquals("Title should match", "A Sample Address Book", bufferedReader.readLine().trim());
+		
+		// assert that each value matches
+		while ((line = bufferedReader.readLine()) != null) {
+			assertEquals("First name should match", "Josh", line.trim());
+			assertEquals("Last name should match", "Sampleman", bufferedReader.readLine().trim());
+			assertEquals("Address should match", "22 Big Road", bufferedReader.readLine().trim());
+			assertEquals("City should match", "Miami", bufferedReader.readLine().trim());
+			assertEquals("State should match", "FL", bufferedReader.readLine().trim());
+			assertEquals("ZIP should match", "12890", bufferedReader.readLine().trim());
+			assertEquals("Phone should match", "123 234 3456", bufferedReader.readLine().trim());
+		}
+
+		bufferedReader.close();
+		file.delete();
+	}
+	
+	@Test
+	public void testSaveFileWithEmptyTitle() throws UnsupportedEncodingException, FileNotFoundException, IOException {
+		
+		// mock person and address book
+		Person person = new Person("Josh", "Sampleman", "22 Big Road", "Miami", "FL", "12890", "123 234 3456");		
+		addressBook.addPerson(person);
+		
+		File file = new File("testBooks/tempBook.txt");
+		file.delete();
+		fileSystem.saveFile(addressBook, file);
+		
+		FileReader fileReader = new FileReader(file);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		String line = null;
+
+		assertEquals("Title should match", "", bufferedReader.readLine().trim());
+		
 		// assert that each value matches
 		while ((line = bufferedReader.readLine()) != null) {
 			assertEquals("First name should match", "Josh", line.trim());

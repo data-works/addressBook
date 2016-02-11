@@ -1,13 +1,17 @@
-package addressBook.main;
+package addressBook.main.java;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * The Class AddressBook.
+ */
 public class AddressBook {
 
 	private List<Person> persons;
+	private String title;
 	
 	public AddressBook() {
 		persons = new ArrayList<Person>();
@@ -62,5 +66,13 @@ public class AddressBook {
                 return lhs.getZip().compareTo(rhs.getZip());
             }
 		});
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

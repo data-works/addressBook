@@ -1,4 +1,4 @@
-package addressBook.main;
+package addressBook.main.java;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,6 +11,9 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+/**
+ * The Class FileSystem.
+ */
 public class FileSystem {
 
 	/**
@@ -29,6 +32,8 @@ public class FileSystem {
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		String line = null;
 
+		addressBook.setTitle(bufferedReader.readLine().trim());
+		
 		while ((line = bufferedReader.readLine()) != null) {
 
 			// create new person and read the data from the file
@@ -63,7 +68,14 @@ public class FileSystem {
 			throws UnsupportedEncodingException, FileNotFoundException, IOException {
 
 		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
-
+		
+		// save the address book title
+		if(addressBook.getTitle() != null) {
+			writer.write(addressBook.getTitle().trim() + "\n");
+		} else {
+			writer.write("\n");
+		}
+		
 		// save each person
 		int i = 0;
 		for(Person person : addressBook.getPersons()) {
