@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class AddressBookController {
 	
+	private AddressBook addressBook;
 	private List<AddressBook> addressBooks;
 	private String addressBookDirectory = "books";
 	
@@ -22,6 +23,7 @@ public class AddressBookController {
 	 */
 	public AddressBookController() throws FileNotFoundException, IOException {
 		addressBooks = getAddressBooksFromFiles(getAddressBookFiles());
+		addressBook = new AddressBook();
 	}
 	
 	/**
@@ -34,6 +36,7 @@ public class AddressBookController {
 	public AddressBookController(String addressBookDirectory) throws FileNotFoundException, IOException {
 		this.addressBookDirectory = addressBookDirectory;
 		addressBooks = getAddressBooksFromFiles(getAddressBookFiles());
+		addressBook = new AddressBook();
 	}
 	
 	/**
@@ -68,6 +71,22 @@ public class AddressBookController {
 	}
 	
 	/**
+	 * Gets the address book.
+	 *
+	 * @param file the file
+	 * @return the address book
+	 * @throws FileNotFoundException the file not found exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public AddressBook getAddressBook(File file) throws FileNotFoundException, IOException {
+		
+		FileSystem fileSystem = new FileSystem();
+		AddressBook addressBook = fileSystem.readFile(file);
+		
+		return addressBook;
+	}
+	
+	/**
 	 * List all address books.
 	 *
 	 * @return the list
@@ -75,5 +94,23 @@ public class AddressBookController {
 	public List<AddressBook> listAllAddressBooks() {
 		
 		return addressBooks;
+	}
+
+	/**
+	 * Gets the address book.
+	 *
+	 * @return the address book
+	 */
+	public AddressBook getAddressBook() {
+		return addressBook;
+	}
+
+	/**
+	 * Sets the address book.
+	 *
+	 * @param addressBook the new address book
+	 */
+	public void setAddressBook(AddressBook addressBook) {
+		this.addressBook = addressBook;
 	}
 }
