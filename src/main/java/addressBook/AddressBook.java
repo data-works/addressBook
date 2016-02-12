@@ -45,6 +45,15 @@ public class AddressBook {
 	}
 	
 	/**
+	 * Removes the person by index.
+	 *
+	 * @param index the index
+	 */
+	public void removePersonByIndex(int index) {
+		this.persons.remove(index);
+	}
+	
+	/**
 	 * Sort address book by last name, then first name.
 	 */
 	public void sortAddressBookByName() {

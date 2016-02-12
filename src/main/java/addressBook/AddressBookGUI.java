@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Observable;
 
 import javax.swing.AbstractListModel;
@@ -22,6 +23,7 @@ public class AddressBookGUI {
 
 	private AddressBookController controller;
 	private AddressBook addressBook;
+	private File file;
 	private JFrame frame;
 	private JLabel addressBookTitle;
 	private AbstractListModel nameListModel;
@@ -53,8 +55,12 @@ public class AddressBookGUI {
 		frame = new JFrame("");
 		sortByNameButton = new JButton("");
 		sortByZipButton = new JButton("");
+		addButton = new JButton("");
+		deleteButton = new JButton("");
 		openItem = new JMenuItem("");
-
+		saveItem = new JMenuItem("");
+		saveAsItem = new JMenuItem("");
+		
 		sortByNameButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				addressBook.sortAddressBookByName();
@@ -67,14 +73,35 @@ public class AddressBookGUI {
 			}
 		});
 		
+		addButton.addActionListener(new ActionListener()	{
+			public void actionPerformed(ActionEvent e) {
+				
+				// TODO: Popup to input new person
+				
+			}
+		});
+		
+		deleteButton.addActionListener(new ActionListener()	{
+			public void actionPerformed(ActionEvent e) {
+				addressBook.removePersonByIndex(nameList.getSelectedIndex());				
+			}
+		});
+		
+		editButton.addActionListener(new ActionListener()	{
+			public void actionPerformed(ActionEvent e) {
+				
+				// TODO: Popup to allow user to change person info
+				
+			}
+		});
+
 		openItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
 				int option = fileChooser.showOpenDialog(frame);
 				if (option == JFileChooser.APPROVE_OPTION) {
-				    File file = fileChooser.getSelectedFile();
+				    file = fileChooser.getSelectedFile();
 				    try {
-				    	
 						setAddressBook(controller.getAddressBook(file));
 					} catch (FileNotFoundException e1) {
 						reportError("File not found");
@@ -82,6 +109,43 @@ public class AddressBookGUI {
 						reportError(e1.getMessage());
 					}
 				}
+			}
+		});
+		
+		saveItem.addActionListener(new ActionListener()	{
+			public void actionPerformed(ActionEvent e) {
+				try {
+					controller.saveAddressBook(file);
+				} catch (FileNotFoundException e1) {
+					reportError("File not found");
+				} catch (IOException e1) {
+					reportError(e1.getMessage());
+				}
+			}
+		});
+		
+		saveAsItem.addActionListener(new ActionListener()	{
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				int option = fileChooser.showSaveDialog(frame);
+				if (option == JFileChooser.APPROVE_OPTION) {
+				    file = fileChooser.getSelectedFile();
+				    try {
+				    	controller.saveAddressBook(file);
+					} catch (FileNotFoundException e1) {
+						reportError("File not found");
+					} catch (IOException e1) {
+						reportError(e1.getMessage());
+					}
+				}
+			}
+		});
+		
+		newItem.addActionListener(new ActionListener()	{
+			public void actionPerformed(ActionEvent e) {
+
+				// TODO: Popup to ask user for name of new address book
+				
 			}
 		});
 	}
@@ -94,9 +158,14 @@ public class AddressBookGUI {
 		this.addressBook = addressBook;
 	}
 	
+	/**
+	 * Report error to user.
+	 *
+	 * @param message the message
+	 */
 	public void reportError(String message) {
 		
-		
+		// TODO: Popup to display error message
 	}
 	
 	public void update(Observable o, Object arg) {

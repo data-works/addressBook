@@ -3,6 +3,7 @@ package main.java.addressBook;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +85,19 @@ public class AddressBookController {
 		AddressBook addressBook = fileSystem.readFile(file);
 		
 		return addressBook;
+	}
+	
+	/**
+	 * Save address book.
+	 *
+	 * @param file the file
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 * @throws FileNotFoundException the file not found exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void saveAddressBook(File file) throws UnsupportedEncodingException, FileNotFoundException, IOException {
+		FileSystem fileSystem = new FileSystem();
+		fileSystem.saveFile(addressBook, file);
 	}
 	
 	/**
