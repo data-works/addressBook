@@ -1,5 +1,9 @@
 package main.java.addressBook;
 
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -9,12 +13,21 @@ import java.io.UnsupportedEncodingException;
 import java.util.Observable;
 
 import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * The Class AddressBookGUI.
@@ -27,7 +40,9 @@ public class AddressBookGUI {
 	private JFrame frame;
 	private JLabel addressBookTitle;
 	private AbstractListModel nameListModel;
+	private JLabel personInfo;
 	private JList nameList;
+	private DefaultListModel<String> listModel;
 	private JButton addButton;
 	private JButton editButton;
 	private JButton deleteButton;
@@ -53,40 +68,63 @@ public class AddressBookGUI {
 		addressBookTitle = new JLabel(addressBook.getTitle());
 
 		frame = new JFrame("");
-		sortByNameButton = new JButton("");
-		sortByZipButton = new JButton("");
-		addButton = new JButton("");
-		deleteButton = new JButton("");
-		openItem = new JMenuItem("");
-		saveItem = new JMenuItem("");
-		saveAsItem = new JMenuItem("");
+		sortByNameButton = new JButton("Sort by Name");
+		sortByZipButton = new JButton("Sort by ZIP");
+		addButton = new JButton("Add");
+		editButton = new JButton("Edit");
+		deleteButton = new JButton("Delete");
+		openItem = new JMenuItem("Open");
+		saveItem = new JMenuItem("Save");
+		saveAsItem = new JMenuItem("Save As...");
+		listModel = new DefaultListModel<>();
 		
 		sortByNameButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				addressBook.sortAddressBookByName();
+				refreshAddressBook(addressBook);
 			}
 		});
 
 		sortByZipButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				addressBook.sortAddressBookByZip();
+				refreshAddressBook(addressBook);
 			}
 		});
 		
 		addButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				
-				// TODO: Popup to input new person
-				
+				Person newPerson = new Person();
+		        JTextField fname = new JTextField("");
+		        JTextField lname = new JTextField("");
+		        JPanel panel = new JPanel(new GridLayout(0, 1));
+		        panel.add(new JLabel("First Name:"));
+		        panel.add(fname);
+		        panel.add(new JLabel("Last Name:"));
+		        panel.add(lname);
+		        int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+		            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		        if (result == JOptionPane.OK_OPTION) {
+		        	newPerson.setFirstName(fname.toString());
+		        	newPerson.setLastName(lname.toString());
+		        	addressBook.addPerson(newPerson);
+		        	refreshAddressBook(addressBook);
+		        } else {
+		        	
+		        }
 			}
 		});
 		
 		deleteButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				addressBook.removePersonByIndex(nameList.getSelectedIndex());				
+				if (!listModel.isEmpty() && !nameList.isSelectionEmpty()) {
+					addressBook.removePersonByIndex(nameList.getSelectedIndex());
+					listModel.removeElementAt(nameList.getSelectedIndex());
+				}
 			}
 		});
 		
+		/*
 		editButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				
@@ -94,6 +132,8 @@ public class AddressBookGUI {
 				
 			}
 		});
+		*/
+		
 
 		openItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
@@ -141,6 +181,7 @@ public class AddressBookGUI {
 			}
 		});
 		
+		/*
 		newItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 
@@ -148,6 +189,88 @@ public class AddressBookGUI {
 				
 			}
 		});
+		*/
+
+	
+		/**
+		 * Begin adding content to GUI
+		 */
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		addressBookTitle = new JLabel("Title");
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 4;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.CENTER;
+		c.anchor = GridBagConstraints.CENTER;
+		panel.add(addressBookTitle, c);
+		
+		c.gridwidth = 1;
+		c.gridx = 0;
+		c.gridy = 1;
+		c.weightx = 0.5;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(addButton, c);
+		
+		c.gridx = 1;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(deleteButton, c);
+		
+		c.gridx = 2;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(sortByNameButton, c);
+		
+		c.gridx = 3;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(sortByZipButton, c);
+		
+		c.gridx = 0;
+		c.gridy = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridheight = 7;
+		c.gridwidth = 2;
+		for (Person p : addressBook.getPersons()) {
+			listModel.addElement(p.getFirstName() + p.getLastName());
+		}
+		nameList = new JList<>(listModel);
+		nameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		nameList.setSelectedIndex(0);
+		panel.add(nameList, c);
+		
+		c.gridx = 3;
+		c.gridy = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		personInfo = new JLabel();
+		panel.add(personInfo, c);
+		
+		nameList.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                  personInfo.setText("TODO");
+                }
+            }
+        });
+		
+		frame.add(panel);
+		frame.setSize(600, 400);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setResizable(false);
+        frame.setVisible(true);
+	
+	}
+	
+	public void refreshAddressBook(AddressBook ab) {
+		listModel.removeAllElements();
+		for (Person p : ab.getPersons()) {
+			listModel.addElement(p.getFirstName() + p.getLastName());
+		}
 	}
 
 	public AddressBook getAddressBook() {
