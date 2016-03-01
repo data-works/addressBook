@@ -11,6 +11,9 @@ public class Initialize {
 
 		AddressBookController controller = new AddressBookController();
 		AddressBook book = controller.getAddressBook();
+		/**
+		 * Adding a bunch of dummy persons for testing
+		 */
 		Person person = new Person();
 		person.setFirstName("Matt");
 		person.setLastName("Sinex");
@@ -48,6 +51,7 @@ public class Initialize {
 		person4.setZip("33908");
 		book.addPerson(person4);
 		
+		// Start the app
 		AddressBookGUI gui = new AddressBookGUI(controller, book);
 	}
 

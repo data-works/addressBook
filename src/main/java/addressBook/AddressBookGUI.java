@@ -78,6 +78,9 @@ public class AddressBookGUI {
 		saveAsItem = new JMenuItem("Save As...");
 		listModel = new DefaultListModel<>();
 		
+		/**
+		 * Sort address book by Last Name (currently working)
+		 */
 		sortByNameButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				addressBook.sortAddressBookByName();
@@ -85,6 +88,9 @@ public class AddressBookGUI {
 			}
 		});
 
+		/**
+		 * Sort address book by ZIP code (currently working)
+		 */
 		sortByZipButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				addressBook.sortAddressBookByZip();
@@ -92,6 +98,11 @@ public class AddressBookGUI {
 			}
 		});
 		
+		/**
+		 * Add a new person to the address book.
+		 * NOTE: Currently does not work. More time will be spent
+		 * correcting this soon.
+		 */
 		addButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				Person newPerson = new Person();
@@ -194,6 +205,8 @@ public class AddressBookGUI {
 	
 		/**
 		 * Begin adding content to GUI
+		 * NOTE: This will change. This is a temporary layout.
+		 * I don't particularly like the Grid Bag Layout, so it is only temporary.
 		 */
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -233,6 +246,9 @@ public class AddressBookGUI {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridheight = 7;
 		c.gridwidth = 2;
+		/**
+		 * Add all people to list
+		 */
 		for (Person p : addressBook.getPersons()) {
 			listModel.addElement(p.getFirstName() + p.getLastName());
 		}
@@ -247,6 +263,9 @@ public class AddressBookGUI {
 		personInfo = new JLabel();
 		panel.add(personInfo, c);
 		
+		/**
+		 * Eventually, this will display the selected perons's info on the side
+		 */
 		nameList.addListSelectionListener(new ListSelectionListener() {
 
             @Override
@@ -257,11 +276,14 @@ public class AddressBookGUI {
             }
         });
 		
+		/**
+		 * Setup some properties of the window
+		 */
 		frame.add(panel);
 		frame.setSize(600, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
-		frame.setResizable(false);
+		frame.setResizable(true);
         frame.setVisible(true);
 	
 	}
@@ -277,6 +299,10 @@ public class AddressBookGUI {
 		return addressBook;
 	}
 
+	/**
+	 * Refresh address book contents. Used for sorting and other things.
+	 * @param addressBook
+	 */
 	public void setAddressBook(AddressBook addressBook) {
 		this.addressBook = addressBook;
 	}
