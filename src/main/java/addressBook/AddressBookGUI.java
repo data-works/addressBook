@@ -210,7 +210,7 @@ public class AddressBookGUI {
 		 */
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		addressBookTitle = new JLabel("Title");
+		addressBookTitle = new JLabel(addressBook.getTitle());
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 4;
@@ -250,7 +250,7 @@ public class AddressBookGUI {
 		 * Add all people to list
 		 */
 		for (Person p : addressBook.getPersons()) {
-			listModel.addElement(p.getFirstName() + p.getLastName());
+			listModel.addElement(p.getFirstName() + " " + p.getLastName());
 		}
 		nameList = new JList<>(listModel);
 		nameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -291,7 +291,7 @@ public class AddressBookGUI {
 	public void refreshAddressBook(AddressBook ab) {
 		listModel.removeAllElements();
 		for (Person p : ab.getPersons()) {
-			listModel.addElement(p.getFirstName() + p.getLastName());
+			listModel.addElement(p.getFirstName() + " " + p.getLastName());
 		}
 	}
 
@@ -319,5 +319,15 @@ public class AddressBookGUI {
 	
 	public void update(Observable o, Object arg) {
 		
+	}
+	
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		
+		File file = new File("books/sampleBook.txt");
+		
+		AddressBookController controller = new AddressBookController();
+		AddressBook book = controller.getAddressBook(file);
+		
+		AddressBookGUI gui = new AddressBookGUI(controller, book);
 	}
 }
