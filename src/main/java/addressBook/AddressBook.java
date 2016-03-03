@@ -60,7 +60,12 @@ public class AddressBook {
 		Collections.sort(persons, new Comparator<Person>() {
 			@Override
             public int compare(Person lhs, Person rhs) {
-                return lhs.getLastName().concat(lhs.getFirstName()).compareTo(rhs.getLastName().concat(rhs.getFirstName()));
+				
+				if(lhs.getFirstName() != null && rhs.getFirstName() != null){
+					return lhs.getLastName().concat(lhs.getFirstName()).compareTo(rhs.getLastName().concat(rhs.getFirstName()));
+				} else {
+					return lhs.getLastName().compareTo(rhs.getLastName());
+				}
             }
 		});
 	}

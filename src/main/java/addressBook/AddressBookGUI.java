@@ -6,12 +6,14 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Observable;
 
+import javax.swing.AbstractButton;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -20,12 +22,15 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -38,16 +43,18 @@ public class AddressBookGUI {
 	private AddressBook addressBook;
 	private File file;
 	private JFrame frame;
+	public JMenuBar menuBar;
+	public JMenu menu;
 	private JLabel addressBookTitle;
 	private AbstractListModel nameListModel;
 	private JLabel personInfo;
-	private JList nameList;
+	public JList nameList;
 	private DefaultListModel<String> listModel;
 	private JButton addButton;
 	private JButton editButton;
-	private JButton deleteButton;
-	private JButton sortByNameButton;
-	private JButton sortByZipButton;
+	public JButton deleteButton;
+	public JButton sortByNameButton;
+	public JButton sortByZipButton;
 	private JMenuItem newItem;
 	private JMenuItem openItem;
 	private JMenuItem saveItem;
@@ -68,18 +75,120 @@ public class AddressBookGUI {
 		addressBookTitle = new JLabel(addressBook.getTitle());
 
 		frame = new JFrame("");
+		menuBar = new JMenuBar();
+		menu = new JMenu("File");
 		sortByNameButton = new JButton("Sort by Name");
 		sortByZipButton = new JButton("Sort by ZIP");
 		addButton = new JButton("Add");
 		editButton = new JButton("Edit");
 		deleteButton = new JButton("Delete");
-		openItem = new JMenuItem("Open");
-		saveItem = new JMenuItem("Save");
-		saveAsItem = new JMenuItem("Save As...");
+		newItem = new JMenuItem("New", UIManager.getIcon("FileView.fileIcon"));
+		openItem = new JMenuItem("Open", UIManager.getIcon("FileView.directoryIcon"));
+		saveItem = new JMenuItem("Save", UIManager.getIcon("FileView.floppyDriveIcon"));
+		saveAsItem = new JMenuItem("Save As...", UIManager.getIcon("FileView.floppyDriveIcon"));
 		listModel = new DefaultListModel<>();
 		
+		menu.setMnemonic(KeyEvent.VK_F);
+		newItem.setMnemonic(KeyEvent.VK_N);
+		openItem.setMnemonic(KeyEvent.VK_O);
+		saveItem.setMnemonic(KeyEvent.VK_S);
+		saveAsItem.setMnemonic(KeyEvent.VK_A);
+		menu.add(newItem);
+		menu.add(openItem);
+		menu.add(saveItem);
+		menu.add(saveAsItem);
+		menuBar.add(menu);
+		frame.setJMenuBar(menuBar);
+		
 		/**
-		 * Sort address book by Last Name (currently working)
+		 * Begin adding content to GUI
+		 * NOTE: This will change. This is a temporary layout.
+		 * I don't particularly like the Grid Bag Layout, so it is only temporary.
+		 */
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		addressBookTitle = new JLabel(addressBook.getTitle());
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 4;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.CENTER;
+		c.anchor = GridBagConstraints.CENTER;
+		panel.add(addressBookTitle, c);
+		
+		c.gridwidth = 1;
+		c.gridx = 0;
+		c.gridy = 1;
+		c.weightx = 0.5;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(addButton, c);
+		
+		c.gridx = 1;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(deleteButton, c);
+		
+		c.gridx = 2;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(sortByNameButton, c);
+		
+		c.gridx = 3;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(sortByZipButton, c);
+		
+		c.gridx = 0;
+		c.gridy = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridheight = 7;
+		c.gridwidth = 2;
+		
+		/**
+		 * Add all people to list
+		 */
+		for (Person p : addressBook.getPersons()) {
+			listModel.addElement(p.getFirstName() + " " + p.getLastName());
+		}
+		nameList = new JList<>(listModel);
+		nameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		nameList.setSelectedIndex(0);
+		panel.add(nameList, c);
+		
+		c.gridx = 3;
+		c.gridy = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		personInfo = new JLabel();
+		panel.add(personInfo, c);
+		
+		/**
+		 * Eventually, this will display the selected perons's info on the side
+		 */
+		nameList.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                  personInfo.setText("TODO");
+                }
+            }
+        });
+		
+		/**
+		 * Setup some properties of the window
+		 */
+		frame.add(panel);
+		frame.setSize(900, 700);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null); 
+		//frame.pack();
+		frame.setResizable(true);
+        frame.setVisible(true);
+        
+        // ActionListeners
+        
+		/**
+		 * Sort address book by Last Name
 		 */
 		sortByNameButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
@@ -89,7 +198,7 @@ public class AddressBookGUI {
 		});
 
 		/**
-		 * Sort address book by ZIP code (currently working)
+		 * Sort address book by ZIP code
 		 */
 		sortByZipButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
@@ -145,7 +254,16 @@ public class AddressBookGUI {
 		});
 		*/
 		
+		/*
+		newItem.addActionListener(new ActionListener()	{
+			public void actionPerformed(ActionEvent e) {
 
+				// TODO: Popup to ask user for name of new address book
+				
+			}
+		});
+		*/
+		
 		openItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
@@ -191,101 +309,6 @@ public class AddressBookGUI {
 				}
 			}
 		});
-		
-		/*
-		newItem.addActionListener(new ActionListener()	{
-			public void actionPerformed(ActionEvent e) {
-
-				// TODO: Popup to ask user for name of new address book
-				
-			}
-		});
-		*/
-
-	
-		/**
-		 * Begin adding content to GUI
-		 * NOTE: This will change. This is a temporary layout.
-		 * I don't particularly like the Grid Bag Layout, so it is only temporary.
-		 */
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		addressBookTitle = new JLabel(addressBook.getTitle());
-		c.gridx = 0;
-		c.gridy = 0;
-		c.gridwidth = 4;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.fill = GridBagConstraints.CENTER;
-		c.anchor = GridBagConstraints.CENTER;
-		panel.add(addressBookTitle, c);
-		
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.weightx = 0.5;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		panel.add(addButton, c);
-		
-		c.gridx = 1;
-		c.gridy = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		panel.add(deleteButton, c);
-		
-		c.gridx = 2;
-		c.gridy = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		panel.add(sortByNameButton, c);
-		
-		c.gridx = 3;
-		c.gridy = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		panel.add(sortByZipButton, c);
-		
-		c.gridx = 0;
-		c.gridy = 2;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridheight = 7;
-		c.gridwidth = 2;
-		/**
-		 * Add all people to list
-		 */
-		for (Person p : addressBook.getPersons()) {
-			listModel.addElement(p.getFirstName() + " " + p.getLastName());
-		}
-		nameList = new JList<>(listModel);
-		nameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		nameList.setSelectedIndex(0);
-		panel.add(nameList, c);
-		
-		c.gridx = 3;
-		c.gridy = 2;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		personInfo = new JLabel();
-		panel.add(personInfo, c);
-		
-		/**
-		 * Eventually, this will display the selected perons's info on the side
-		 */
-		nameList.addListSelectionListener(new ListSelectionListener() {
-
-            @Override
-            public void valueChanged(ListSelectionEvent arg0) {
-                if (!arg0.getValueIsAdjusting()) {
-                  personInfo.setText("TODO");
-                }
-            }
-        });
-		
-		/**
-		 * Setup some properties of the window
-		 */
-		frame.add(panel);
-		frame.setSize(600, 400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setResizable(true);
-        frame.setVisible(true);
-	
 	}
 	
 	public void refreshAddressBook(AddressBook ab) {
