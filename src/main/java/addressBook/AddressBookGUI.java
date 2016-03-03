@@ -1,6 +1,5 @@
 package main.java.addressBook;
 
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -10,14 +9,11 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Observable;
 
-import javax.swing.AbstractButton;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,7 +23,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
@@ -82,10 +77,12 @@ public class AddressBookGUI {
 		addButton = new JButton("Add");
 		editButton = new JButton("Edit");
 		deleteButton = new JButton("Delete");
-		newItem = new JMenuItem("New", UIManager.getIcon("FileView.fileIcon"));
+		newItem = new JMenuItem("New", UIManager.getIcon("InternalFrame.icon"));
 		openItem = new JMenuItem("Open", UIManager.getIcon("FileView.directoryIcon"));
 		saveItem = new JMenuItem("Save", UIManager.getIcon("FileView.floppyDriveIcon"));
 		saveAsItem = new JMenuItem("Save As...", UIManager.getIcon("FileView.floppyDriveIcon"));
+		printItem = new JMenuItem("Print", UIManager.getIcon("FileView.fileIcon"));
+		quitItem = new JMenuItem("Quit", UIManager.getIcon("InternalFrame.paletteCloseIcon"));
 		listModel = new DefaultListModel<>();
 		
 		menu.setMnemonic(KeyEvent.VK_F);
@@ -93,10 +90,14 @@ public class AddressBookGUI {
 		openItem.setMnemonic(KeyEvent.VK_O);
 		saveItem.setMnemonic(KeyEvent.VK_S);
 		saveAsItem.setMnemonic(KeyEvent.VK_A);
+		printItem.setMnemonic(KeyEvent.VK_P);
+		quitItem.setMnemonic(KeyEvent.VK_Q);
 		menu.add(newItem);
 		menu.add(openItem);
 		menu.add(saveItem);
 		menu.add(saveAsItem);
+		menu.add(printItem);
+		menu.add(quitItem);
 		menuBar.add(menu);
 		frame.setJMenuBar(menuBar);
 		
@@ -162,6 +163,17 @@ public class AddressBookGUI {
 		panel.add(personInfo, c);
 		
 		/**
+		 * Setup some properties of the window
+		 */
+		frame.add(panel);
+		frame.setSize(900, 700);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null); 
+		//frame.pack();
+		frame.setResizable(true);
+        frame.setVisible(true);
+        
+		/**
 		 * Eventually, this will display the selected perons's info on the side
 		 */
 		nameList.addListSelectionListener(new ListSelectionListener() {
@@ -173,17 +185,6 @@ public class AddressBookGUI {
                 }
             }
         });
-		
-		/**
-		 * Setup some properties of the window
-		 */
-		frame.add(panel);
-		frame.setSize(900, 700);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null); 
-		//frame.pack();
-		frame.setResizable(true);
-        frame.setVisible(true);
         
         // ActionListeners
         

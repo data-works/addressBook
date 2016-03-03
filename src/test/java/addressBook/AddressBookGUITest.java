@@ -1,8 +1,7 @@
 package test.java.addressBook;
 
-import static org.junit.Assert.*;
-
-import javax.swing.JButton;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.After;
 import org.junit.Before;

@@ -90,7 +90,7 @@ public class FileSystem {
 			if(addressBook.getPersons().size()-1 != i) {
 				writer.write(person.getPhone() + "\n");	
 			} else {
-				writer.write(person.getPhone());	
+				writer.write(person.getPhone() + "");	
 			}
 			i++;
 		}
