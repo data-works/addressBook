@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Observable;
 
 import javax.swing.AbstractListModel;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -28,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -60,6 +62,8 @@ public class AddressBookGUI {
 	private JMenuItem printItem;
 	private JMenuItem quitItem;
 	private JScrollPane scrollPane;
+	private JPanel info;
+	private ListSelectionModel listSelection;
 	
 	/**
 	 * Instantiates a new address book GUI.
@@ -166,12 +170,19 @@ public class AddressBookGUI {
 		scrollPane.setPreferredSize(new Dimension(0, 400));
 		panel.add(scrollPane, c);
 		
-		c.gridx = 3;
+		c.gridx = 2;
 		c.gridy = 2;
 		c.gridwidth = 2;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		personInfo = new JLabel("INFO HERE");
-		panel.add(personInfo, c);
+		
+		info = new JPanel(new GridLayout(0, 1));
+		
+		JLabel labels[] = new JLabel[7];
+		for (int i = 0; i < 7; i++) {
+			labels[i] = new JLabel();
+			info.add(labels[i]);
+		}
+		
+		panel.add(info, c);
 		
 		/**
 		 * Setup some properties of the window
@@ -192,7 +203,16 @@ public class AddressBookGUI {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                  personInfo.setText("INFO");
+                	if (!nameList.isSelectionEmpty()) {
+                		Person person = addressBook.getPerson(nameList.getSelectedIndex());
+                        labels[0].setText(person.getFirstName());
+                        labels[1].setText(person.getLastName());
+                        labels[2].setText(person.getAddress());
+                        labels[3].setText(person.getCity());
+                        labels[4].setText(person.getState());
+                        labels[5].setText(person.getZip());
+                        labels[6].setText(person.getPhone());
+                	}
                 }
             }
         });
@@ -278,6 +298,9 @@ public class AddressBookGUI {
 					if (result == JOptionPane.OK_OPTION) {
 						addressBook.removePersonByIndex(nameList.getSelectedIndex());
 						listModel.removeElementAt(nameList.getSelectedIndex());
+						for (int i = 0; i < 7; i++) {
+							labels[i].setText("");
+						}
 			        } else {
 			        	
 			        }
@@ -357,6 +380,7 @@ public class AddressBookGUI {
 		for (Person p : ab.getPersons()) {
 			listModel.addElement(p.getFirstName() + " " + p.getLastName());
 		}
+		nameList.setSelectedIndex(0);
 	}
 
 	public AddressBook getAddressBook() {

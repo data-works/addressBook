@@ -35,6 +35,10 @@ public class AddressBook {
 		this.persons.add(person);
 	}
 	
+	public Person getPerson(int index) {
+		return persons.get(index);
+	}
+	
 	/**
 	 * Removes the person.
 	 *
