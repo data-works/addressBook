@@ -1,5 +1,7 @@
 package main.java.addressBook;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -23,6 +25,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
@@ -56,6 +59,7 @@ public class AddressBookGUI {
 	private JMenuItem saveAsItem;
 	private JMenuItem printItem;
 	private JMenuItem quitItem;
+	private JScrollPane scrollPane;
 	
 	/**
 	 * Instantiates a new address book GUI.
@@ -106,15 +110,18 @@ public class AddressBookGUI {
 		 * NOTE: This will change. This is a temporary layout.
 		 * I don't particularly like the Grid Bag Layout, so it is only temporary.
 		 */
+		
+		
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
+		
 		addressBookTitle = new JLabel(addressBook.getTitle());
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 4;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.fill = GridBagConstraints.CENTER;
-		c.anchor = GridBagConstraints.CENTER;
+		c.anchor = GridBagConstraints.PAGE_START;
 		panel.add(addressBookTitle, c);
 		
 		c.gridwidth = 1;
@@ -142,7 +149,7 @@ public class AddressBookGUI {
 		c.gridx = 0;
 		c.gridy = 2;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridheight = 7;
+		c.gridheight = 10;
 		c.gridwidth = 2;
 		
 		/**
@@ -154,23 +161,27 @@ public class AddressBookGUI {
 		nameList = new JList<>(listModel);
 		nameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		nameList.setSelectedIndex(0);
-		panel.add(nameList, c);
+		
+		scrollPane = new JScrollPane(nameList);
+		scrollPane.setPreferredSize(new Dimension(0, 400));
+		panel.add(scrollPane, c);
 		
 		c.gridx = 3;
 		c.gridy = 2;
+		c.gridwidth = 2;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		personInfo = new JLabel();
+		personInfo = new JLabel("INFO HERE");
 		panel.add(personInfo, c);
 		
 		/**
 		 * Setup some properties of the window
 		 */
-		frame.add(panel);
-		frame.setSize(900, 700);
+		frame.add(panel, BorderLayout.NORTH);
+		frame.setSize(900, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null); 
 		//frame.pack();
-		frame.setResizable(true);
+		frame.setResizable(false);
         frame.setVisible(true);
         
 		/**
@@ -181,7 +192,7 @@ public class AddressBookGUI {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                  personInfo.setText("TODO");
+                  personInfo.setText("INFO");
                 }
             }
         });
@@ -218,16 +229,36 @@ public class AddressBookGUI {
 				Person newPerson = new Person();
 		        JTextField fname = new JTextField("");
 		        JTextField lname = new JTextField("");
+		        JTextField address = new JTextField("");
+		        JTextField city = new JTextField("");
+		        JTextField state = new JTextField("");
+		        JTextField zip = new JTextField("");
+		        JTextField phone = new JTextField("");
 		        JPanel panel = new JPanel(new GridLayout(0, 1));
 		        panel.add(new JLabel("First Name:"));
 		        panel.add(fname);
 		        panel.add(new JLabel("Last Name:"));
 		        panel.add(lname);
+		        panel.add(new JLabel("Street Address:"));
+		        panel.add(address);
+		        panel.add(new JLabel("City:"));
+		        panel.add(city);
+		        panel.add(new JLabel("State:"));
+		        panel.add(state);
+		        panel.add(new JLabel("ZIP Code:"));
+		        panel.add(zip);
+		        panel.add(new JLabel("Phone Number:"));
+		        panel.add(phone);
 		        int result = JOptionPane.showConfirmDialog(null, panel, "Test",
 		            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		        if (result == JOptionPane.OK_OPTION) {
-		        	newPerson.setFirstName(fname.toString());
-		        	newPerson.setLastName(lname.toString());
+		        	newPerson.setFirstName(fname.getText());
+		        	newPerson.setLastName(lname.getText());
+		        	newPerson.setAddress(address.getText());
+		        	newPerson.setCity(city.getText());
+		        	newPerson.setState(state.getText());
+		        	newPerson.setZip(zip.getText());
+		        	newPerson.setPhone(phone.getText());
 		        	addressBook.addPerson(newPerson);
 		        	refreshAddressBook(addressBook);
 		        } else {
@@ -347,7 +378,7 @@ public class AddressBookGUI {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		
-		File file = new File("books/sampleBook.txt");
+		File file = new File("books/sampleBookLong.txt");
 		
 		AddressBookController controller = new AddressBookController();
 		AddressBook book = controller.getAddressBook(file);
