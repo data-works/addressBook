@@ -270,8 +270,17 @@ public class AddressBookGUI {
 		deleteButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				if (!listModel.isEmpty() && !nameList.isSelectionEmpty()) {
-					addressBook.removePersonByIndex(nameList.getSelectedIndex());
-					listModel.removeElementAt(nameList.getSelectedIndex());
+					JPanel panel = new JPanel(new GridLayout(0, 1));
+					JLabel warning = new JLabel("Are you sure you want to delete the selected contact?");
+					panel.add(warning);
+					int result = JOptionPane.showConfirmDialog(null, panel, "Delete",
+				            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+					if (result == JOptionPane.OK_OPTION) {
+						addressBook.removePersonByIndex(nameList.getSelectedIndex());
+						listModel.removeElementAt(nameList.getSelectedIndex());
+			        } else {
+			        	
+			        }
 				}
 			}
 		});
