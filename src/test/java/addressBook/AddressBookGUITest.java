@@ -10,6 +10,7 @@ import org.junit.Test;
 import main.java.addressBook.AddressBook;
 import main.java.addressBook.AddressBookController;
 import main.java.addressBook.AddressBookGUI;
+import main.java.addressBook.OkMockOptionPane;
 import main.java.addressBook.Person;
 
 public class AddressBookGUITest {
@@ -71,6 +72,7 @@ public class AddressBookGUITest {
 	public void testDeleteButton() {
 		gui.nameList.setSelectedIndex(0);
 		int previousLength = gui.getAddressBook().getPersons().size();
+		gui.setOptionPane(new OkMockOptionPane());
 		gui.deleteButton.doClick();
 		assertEquals("Address Book should have one less person in it", previousLength-1, gui.getAddressBook().getPersons().size());
 		assertNotEquals("Address Book should not contain deleted person", addressBook1.getPersons().get(0).getLastName(), 

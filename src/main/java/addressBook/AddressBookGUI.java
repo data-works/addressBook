@@ -64,6 +64,7 @@ public class AddressBookGUI {
 	private JScrollPane scrollPane;
 	private JPanel info;
 	private ListSelectionModel listSelection;
+	private OptionPane optionPane;
 	
 	/**
 	 * Instantiates a new address book GUI.
@@ -92,6 +93,7 @@ public class AddressBookGUI {
 		printItem = new JMenuItem("Print", UIManager.getIcon("FileView.fileIcon"));
 		quitItem = new JMenuItem("Quit", UIManager.getIcon("InternalFrame.paletteCloseIcon"));
 		listModel = new DefaultListModel<>();
+		optionPane = new ConfirmationOptionPane();
 		
 		menu.setMnemonic(KeyEvent.VK_F);
 		newItem.setMnemonic(KeyEvent.VK_N);
@@ -293,7 +295,7 @@ public class AddressBookGUI {
 					JPanel panel = new JPanel(new GridLayout(0, 1));
 					JLabel warning = new JLabel("Are you sure you want to delete the selected contact?");
 					panel.add(warning);
-					int result = JOptionPane.showConfirmDialog(null, panel, "Delete",
+					int result = optionPane.showConfirmDialog(null, panel, "Delete",
 				            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 					if (result == JOptionPane.OK_OPTION) {
 						addressBook.removePersonByIndex(nameList.getSelectedIndex());
@@ -417,5 +419,9 @@ public class AddressBookGUI {
 		AddressBook book = controller.getAddressBook(file);
 		
 		AddressBookGUI gui = new AddressBookGUI(controller, book);
+	}
+	
+	public void setOptionPane(OptionPane o) {
+		this.optionPane = o; 
 	}
 }
