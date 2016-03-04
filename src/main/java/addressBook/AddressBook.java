@@ -101,38 +101,44 @@ public class AddressBook {
 
 		List<Person> searchResult = new ArrayList<Person>();
 		
+		int contentCount = person.contentCount();
+		if(contentCount == 0) {
+			persons = searchResult;
+			return;
+		}
+		
 		int itemCount = 0;
 		for(Person p : persons) {
 			if(person.getFirstName() != null && p.getFirstName() != null 
 					&& p.getFirstName().contains(person.getFirstName())) {
 				itemCount++;
 			}
-			if(person.getLastName() != null && p.getLastName() != null 
+			if(itemCount < contentCount && person.getLastName() != null && p.getLastName() != null 
 					&& p.getLastName().contains(person.getLastName())) {
 				itemCount++;
 			}
-			if(person.getAddress() != null && p.getAddress() != null 
+			if(itemCount < contentCount && person.getAddress() != null && p.getAddress() != null 
 					&& p.getAddress().contains(person.getAddress())) {
 				itemCount++;
 			}
-			if(person.getCity() != null && p.getCity() != null 
+			if(itemCount < contentCount && person.getCity() != null && p.getCity() != null 
 					&& p.getCity().contains(person.getCity())) {
 				itemCount++;
 			}
-			if(person.getState() != null && p.getState() != null 
+			if(itemCount < contentCount && person.getState() != null && p.getState() != null 
 					&& p.getState().contains(person.getState())) {
 				itemCount++;
 			}
-			if(person.getZip() != null && p.getZip() != null 
+			if(itemCount < contentCount && person.getZip() != null && p.getZip() != null 
 					&& p.getZip().contains(person.getZip())) {
 				itemCount++;
 			}
-			if(person.getPhone() != null && p.getPhone() != null 
+			if(itemCount < contentCount && person.getPhone() != null && p.getPhone() != null 
 					&& p.getPhone().contains(person.getPhone())) {
 				itemCount++;
 			}
 			
-			if(itemCount == person.contentCount() && person.contentCount() != 0) {
+			if(itemCount == contentCount) {
 				searchResult.add(p);
 			}
 			itemCount = 0;

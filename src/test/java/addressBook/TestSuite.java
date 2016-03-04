@@ -9,7 +9,11 @@ import org.junit.runners.Suite;
 	AddressBookTest.class, 
 	FileSystemTest.class,
 	AddressBookControllerTest.class,
-	AddressBookGUITest.class
+	AddressBookGUITest.class,
+	AddressBookIT.class, 
+	//FileSystemIT.class,
+	//AddressBookControllerIT.class,
+	//AddressBookGUIIT.class
 })
 public class TestSuite {
 

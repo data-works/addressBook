@@ -39,6 +39,8 @@ public class AddressBookControllerTest {
 	public void tearDown() throws Exception {
 		controller1 = null;
 		controller2 = null;
+		addressBook = null;
+		addressBook2 = null;
 	}
 
 	@Test

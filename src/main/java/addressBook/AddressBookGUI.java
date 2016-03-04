@@ -41,6 +41,7 @@ public class AddressBookGUI {
 
 	private AddressBookController controller;
 	private AddressBook addressBook;
+	private AddressBook storedAddressBook; // for clear search button
 	private File file;
 	private JFrame frame;
 	public JMenuBar menuBar;

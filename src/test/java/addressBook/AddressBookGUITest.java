@@ -47,6 +47,11 @@ public class AddressBookGUITest {
 	@After
 	public void tearDown() throws Exception {
 		gui = null;
+		guiEmptyList = null;
+		addressBook1 = null;
+		addressBook2 = null;
+		addressBook3 = null;
+		controller = null;
 	}
 
 	@Test
