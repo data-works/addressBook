@@ -56,4 +56,31 @@ public class AddressBookTest {
 		assertEquals("Third person sorted correctly", person1, addressBook.getPersons().get(2));
 		assertEquals("Fourth person sorted correctly", person2, addressBook.getPersons().get(3));
 	}
+	
+	@Test
+	public void testSearch() {
+		Person person = new Person("John", null, null, null, null, null, null);
+		addressBook.search(person);
+		
+		assertEquals("Should find one person", 1, addressBook.getPersons().size());
+		assertEquals("Should find correct person", "John", addressBook.getPerson(0).getFirstName());
+	}
+	
+	@Test
+	public void testSearchWithMultipleResults() {
+		Person person = new Person(null, "Bbb", null, null, null, null, null);
+		addressBook.search(person);
+		
+		assertEquals("Should find two people", 2, addressBook.getPersons().size());
+		assertEquals("Should find the correct first person", "John", addressBook.getPerson(0).getFirstName());
+		assertEquals("Should find the correct first person", "Jane", addressBook.getPerson(1).getFirstName());
+	}
+	
+	@Test
+	public void testSearchWithNoResults() {
+		Person person = new Person(null, null, null, null, null, null, null);
+		addressBook.search(person);
+		
+		assertEquals("Should find two people", 0, addressBook.getPersons().size());
+	}
 }

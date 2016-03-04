@@ -98,7 +98,47 @@ public class AddressBook {
 	 * @param person the person
 	 */
 	public void search(Person person) {
-		// TODO: Added as per requirements on 3/3/2016
+
+		List<Person> searchResult = new ArrayList<Person>();
+		
+		int itemCount = 0;
+		for(Person p : persons) {
+			if(person.getFirstName() != null && p.getFirstName() != null 
+					&& p.getFirstName().contains(person.getFirstName())) {
+				itemCount++;
+			}
+			if(person.getLastName() != null && p.getLastName() != null 
+					&& p.getLastName().contains(person.getLastName())) {
+				itemCount++;
+			}
+			if(person.getAddress() != null && p.getAddress() != null 
+					&& p.getAddress().contains(person.getAddress())) {
+				itemCount++;
+			}
+			if(person.getCity() != null && p.getCity() != null 
+					&& p.getCity().contains(person.getCity())) {
+				itemCount++;
+			}
+			if(person.getState() != null && p.getState() != null 
+					&& p.getState().contains(person.getState())) {
+				itemCount++;
+			}
+			if(person.getZip() != null && p.getZip() != null 
+					&& p.getZip().contains(person.getZip())) {
+				itemCount++;
+			}
+			if(person.getPhone() != null && p.getPhone() != null 
+					&& p.getPhone().contains(person.getPhone())) {
+				itemCount++;
+			}
+			
+			if(itemCount == person.contentCount() && person.contentCount() != 0) {
+				searchResult.add(p);
+			}
+			itemCount = 0;
+		}
+		
+		persons = searchResult;
 	}
 	
 	/**

@@ -1,5 +1,7 @@
 package main.java.addressBook;
 
+import java.lang.reflect.Field;
+
 /**
  * The Class Person.
  */
@@ -166,5 +168,29 @@ public class Person {
 	 */
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	
+	/**
+	 * Count of the person's attribute that are set.
+	 *
+	 * @return the int
+	 */
+	public int contentCount() {
+		
+		int count = 0;
+		
+		for(Field f : getClass().getDeclaredFields()) {
+		    try {
+				if(f.get(this) != null) {
+					count++;
+				}
+			} catch (IllegalArgumentException e) {
+				// do nothing
+			} catch (IllegalAccessException e) {
+				// do nothing
+			}
+		}
+		
+		return count;
 	}
 }
