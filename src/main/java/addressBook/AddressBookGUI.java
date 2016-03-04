@@ -65,6 +65,7 @@ public class AddressBookGUI {
 	private JPanel info;
 	private ListSelectionModel listSelection;
 	private OptionPane optionPane;
+	private JLabel labels[];
 	
 	/**
 	 * Instantiates a new address book GUI.
@@ -151,6 +152,11 @@ public class AddressBookGUI {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		panel.add(sortByZipButton, c);
 		
+		c.gridx = 4;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(editButton,c );
+		
 		c.gridx = 0;
 		c.gridy = 2;
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -177,7 +183,7 @@ public class AddressBookGUI {
 		
 		info = new JPanel(new GridLayout(0, 1));
 		
-		JLabel labels[] = new JLabel[7];
+		labels = new JLabel[7];
 		for (int i = 0; i < 7; i++) {
 			labels[i] = new JLabel();
 			info.add(labels[i]);
@@ -196,8 +202,9 @@ public class AddressBookGUI {
 		frame.setResizable(false);
         frame.setVisible(true);
         
+        
 		/**
-		 * Eventually, this will display the selected perons's info on the side
+		 * Displays the selected perons's info on the side
 		 */
 		nameList.addListSelectionListener(new ListSelectionListener() {
 
@@ -206,13 +213,7 @@ public class AddressBookGUI {
                 if (!arg0.getValueIsAdjusting()) {
                 	if (!nameList.isSelectionEmpty()) {
                 		Person person = addressBook.getPerson(nameList.getSelectedIndex());
-                        labels[0].setText(person.getFirstName());
-                        labels[1].setText(person.getLastName());
-                        labels[2].setText(person.getAddress());
-                        labels[3].setText(person.getCity());
-                        labels[4].setText(person.getState());
-                        labels[5].setText(person.getZip());
-                        labels[6].setText(person.getPhone());
+                		setPerson(person);
                 	}
                 }
             }
@@ -242,8 +243,6 @@ public class AddressBookGUI {
 		
 		/**
 		 * Add a new person to the address book.
-		 * NOTE: Currently does not work. More time will be spent
-		 * correcting this soon.
 		 */
 		addButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
@@ -309,15 +308,52 @@ public class AddressBookGUI {
 			}
 		});
 		
-		/*
+		// Popup to allow user to change person info
 		editButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				
-				// TODO: Popup to allow user to change person info
+				Person person = addressBook.getPerson(nameList.getSelectedIndex());
+                
+		        JTextField fname = new JTextField(person.getFirstName());
+		        JTextField lname = new JTextField(person.getLastName());
+		        JTextField address = new JTextField(person.getAddress());
+		        JTextField city = new JTextField(person.getCity());
+		        JTextField state = new JTextField(person.getState());
+		        JTextField zip = new JTextField(person.getZip());
+		        JTextField phone = new JTextField(person.getPhone());
+		        JPanel panel = new JPanel(new GridLayout(0, 1));
+		        panel.add(new JLabel("First Name:"));
+		        panel.add(fname);
+		        panel.add(new JLabel("Last Name:"));
+		        panel.add(lname);
+		        panel.add(new JLabel("Street Address:"));
+		        panel.add(address);
+		        panel.add(new JLabel("City:"));
+		        panel.add(city);
+		        panel.add(new JLabel("State:"));
+		        panel.add(state);
+		        panel.add(new JLabel("ZIP Code:"));
+		        panel.add(zip);
+		        panel.add(new JLabel("Phone Number:"));
+		        panel.add(phone);
+		        int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+		            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		        if (result == JOptionPane.OK_OPTION) {
+		        	person.setFirstName(fname.getText());
+		        	person.setLastName(lname.getText());
+		        	person.setAddress(address.getText());
+		        	person.setCity(city.getText());
+		        	person.setState(state.getText());
+		        	person.setZip(zip.getText());
+		        	person.setPhone(phone.getText());        	
+		        	refreshWithSelection(addressBook, nameList.getSelectedIndex());
+		        	setPerson(person);
+		        	
+		        } else {
+		        	
+		        }
 				
 			}
 		});
-		*/
 		
 		/*
 		newItem.addActionListener(new ActionListener()	{
@@ -375,6 +411,23 @@ public class AddressBookGUI {
 			}
 		});
 	}
+	/**
+	 * Will keep the selected person's info in the side bar
+	 * 
+	 * @param p
+	 */
+    public void setPerson(Person p){
+    	if (!nameList.isSelectionEmpty()) {
+            labels[0].setText(p.getFirstName());
+            labels[1].setText(p.getLastName());
+            labels[2].setText(p.getAddress());
+            labels[3].setText(p.getCity());
+            labels[4].setText(p.getState());
+            labels[5].setText(p.getZip());
+            labels[6].setText(p.getPhone());
+            
+    	}
+    }
 	
 	/**
 	 * Refresh address book.
@@ -387,6 +440,21 @@ public class AddressBookGUI {
 			listModel.addElement(p.getFirstName() + " " + p.getLastName());
 		}
 		nameList.setSelectedIndex(0);
+	}
+	
+	/**
+	 * Refresh address book after a edit has happened.
+	 * This method is necessary because it needs the index of the person in the list 
+	 * 
+	 * @param ab
+	 * @param index
+	 */
+	public void refreshWithSelection(AddressBook ab, int index) {
+		listModel.removeAllElements();
+		for (Person p : ab.getPersons()) {
+			listModel.addElement(p.getFirstName() + " " + p.getLastName());
+		}
+		nameList.setSelectedIndex(index);
 	}
 
 	/**
