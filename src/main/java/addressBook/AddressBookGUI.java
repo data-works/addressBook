@@ -117,7 +117,6 @@ public class AddressBookGUI {
 		 * I don't particularly like the Grid Bag Layout, so it is only temporary.
 		 */
 		
-		
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -377,6 +376,11 @@ public class AddressBookGUI {
 		});
 	}
 	
+	/**
+	 * Refresh address book.
+	 *
+	 * @param ab the ab
+	 */
 	public void refreshAddressBook(AddressBook ab) {
 		listModel.removeAllElements();
 		for (Person p : ab.getPersons()) {
@@ -385,6 +389,11 @@ public class AddressBookGUI {
 		nameList.setSelectedIndex(0);
 	}
 
+	/**
+	 * Gets the address book.
+	 *
+	 * @return the address book
+	 */
 	public AddressBook getAddressBook() {
 		return addressBook;
 	}
@@ -421,6 +430,11 @@ public class AddressBookGUI {
 		AddressBookGUI gui = new AddressBookGUI(controller, book);
 	}
 	
+	/**
+	 * Sets the option pane. This option may be used for testing to use a mock OptionPane.
+	 *
+	 * @param o the new option pane
+	 */
 	public void setOptionPane(OptionPane o) {
 		this.optionPane = o; 
 	}

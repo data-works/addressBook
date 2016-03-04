@@ -35,6 +35,12 @@ public class AddressBook {
 		this.persons.add(person);
 	}
 	
+	/**
+	 * Gets the person.
+	 *
+	 * @param index the index
+	 * @return the person
+	 */
 	public Person getPerson(int index) {
 		return persons.get(index);
 	}
@@ -84,6 +90,15 @@ public class AddressBook {
                 return lhs.getZip().compareTo(rhs.getZip());
             }
 		});
+	}
+	
+	/**
+	 * Searches the address book based on given parameters.
+	 *
+	 * @param person the person
+	 */
+	public void search(Person person) {
+		// TODO: Added as per requirements on 3/3/2016
 	}
 	
 	/**

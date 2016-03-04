@@ -79,19 +79,54 @@ public class FileSystem {
 		// save each person
 		int i = 0;
 		for(Person person : addressBook.getPersons()) {
-			writer.write(person.getFirstName() + "\n");
-			writer.write(person.getLastName() + "\n");
-			writer.write(person.getAddress() + "\n");
-			writer.write(person.getCity() + "\n");
-			writer.write(person.getState() + "\n");
-			writer.write(person.getZip() + "\n");
+			
+			if(person.getFirstName() != null) {
+				writer.write(person.getFirstName() + "\n");
+			} else {
+				writer.write("\n");
+			}
+			
+			if(person.getLastName() != null) {
+				writer.write(person.getLastName() + "\n");
+			} else {
+				writer.write("\n");
+			}
+			
+			if(person.getAddress() != null) {
+				writer.write(person.getAddress() + "\n");
+			} else {
+				writer.write("\n");
+			}
+			
+			if(person.getCity() != null) {
+				writer.write(person.getCity() + "\n");
+			} else {
+				writer.write("\n");
+			}
+			
+			if(person.getState() != null) {
+				writer.write(person.getState() + "\n");
+			} else {
+				writer.write("\n");
+			}
+			
+			if(person.getZip() != null) {
+				writer.write(person.getZip() + "\n");
+			} else {
+				writer.write("\n");
+			}
 			
 			// don't add a new line if it is the last person in the address book
-			if(addressBook.getPersons().size()-1 != i) {
-				writer.write(person.getPhone() + "\n");	
+			if(person.getPhone() == null){
+				writer.write("\n");	
 			} else {
-				writer.write(person.getPhone() + "");	
+				if(addressBook.getPersons().size()-1 != i) {
+					writer.write(person.getPhone() + "\n");
+				} else {
+					writer.write(person.getPhone());
+				}
 			}
+
 			i++;
 		}
 		
