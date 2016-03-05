@@ -1,6 +1,7 @@
 package test.java.addressBook;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -12,31 +13,24 @@ import main.java.addressBook.Person;
 
 public class AddressBookTest {
 
-	AddressBook addressBook, addressBookWithMock;
-	Person person1, person2, person3, person4, personMock1, personMock2;
+	AddressBook addressBook;
+	Person person1, person2, person3, person4;
 	
 	@Before
 	public void setUp() throws Exception {
 		
-		// Objects for tests that require mocking
-		personMock1 = EasyMock.createMock("Person1", Person.class);
-		personMock2 = EasyMock.createMock("Person2", Person.class); 
-		
-		addressBookWithMock = new AddressBook();
-		addressBookWithMock.addPerson(personMock1);
-		addressBookWithMock.addPerson(personMock2);
-		
-		// Objects for tests that do not require mocking
-		person1 = new Person("Josh", "Aaa", "22 Big Road", "Miami", "FL", "12893", "123 234 3456");	
-		person2 = new Person("Jane", "Ccc", "22 Big Road", "Miami", "FL", "12899", "123 234 3456");	
-		person3 = new Person("John", "Bbb", "22 Big Road", "Miami", "FL", "12850", "123 234 3456");	
-		person4 = new Person("Jane", "Bbb", "22 Big Road", "Miami", "FL", "12890", "123 234 3456");	
+		person1 = EasyMock.createMock("Person1", Person.class);
+		person2 = EasyMock.createMock("Person2", Person.class);
+		person3 = EasyMock.createMock("Person3", Person.class); 
+		person4 = EasyMock.createMock("Person4", Person.class); 
 		
 		addressBook = new AddressBook();
 		addressBook.addPerson(person1);
 		addressBook.addPerson(person2);
-		addressBook.addPerson(person3);
-		addressBook.addPerson(person4);
+		
+		addressBook = new AddressBook();
+		addressBook.addPerson(person1);
+		addressBook.addPerson(person2);
 	}
 
 	@After
@@ -46,8 +40,6 @@ public class AddressBookTest {
 		person2 = null;
 		person3 = null;
 		person4 = null;
-		personMock1 = null;
-		personMock2 = null;
 	}
 
 	@Test
@@ -58,20 +50,70 @@ public class AddressBookTest {
 	
 	@Test
 	public void testSortAddressBookByName() {
+		
+		addressBook.addPerson(person3);
+		addressBook.addPerson(person4);
+		
+		EasyMock.expect(person1.getFirstName()).andReturn("Ddd").times(3);
+		EasyMock.expect(person1.getLastName()).andReturn("Ddd").times(2);
+		EasyMock.replay(person1);
+		
+		EasyMock.expect(person2.getFirstName()).andReturn(null).times(3);
+		EasyMock.expect(person2.getLastName()).andReturn("Ccc").times(2);
+		EasyMock.replay(person2);
+		
+		EasyMock.expect(person3.getFirstName()).andReturn("Aab").times(3);
+		EasyMock.expect(person3.getLastName()).andReturn("Aaa").times(2);
+		EasyMock.replay(person3);
+		
+		EasyMock.expect(person4.getFirstName()).andReturn("Aaa").times(3);
+		EasyMock.expect(person4.getLastName()).andReturn("Aaa").times(2);
+		EasyMock.replay(person4);
+		
 		addressBook.sortAddressBookByName();
-		assertEquals("First person sorted correctly", person1, addressBook.getPersons().get(0));
-		assertEquals("Second person sorted correctly", person4, addressBook.getPersons().get(1));
-		assertEquals("Third person sorted correctly", person3, addressBook.getPersons().get(2));
-		assertEquals("Fourth person sorted correctly", person2, addressBook.getPersons().get(3));
+		assertEquals("First person sorted correctly", person4, addressBook.getPersons().get(0));
+		assertEquals("Second person sorted correctly", person3, addressBook.getPersons().get(1));
+		assertEquals("Third person sorted correctly", person2, addressBook.getPersons().get(2));
+		assertEquals("Fourth person sorted correctly", person1, addressBook.getPersons().get(3));
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testSortByNameNull(){
+		
+		EasyMock.expect(person1.getFirstName()).andReturn(null);
+		EasyMock.expect(person1.getLastName()).andReturn(null);
+		EasyMock.replay(person1);
+		
+		EasyMock.expect(person2.getFirstName()).andReturn(null);
+		EasyMock.expect(person2.getLastName()).andReturn(null);
+		EasyMock.replay(person2);
+		
+		addressBook.sortAddressBookByName();		
 	}
 	
 	@Test
 	public void testSortAddressBookByZip() {
+		
+		addressBook.addPerson(person3);
+		addressBook.addPerson(person4);
+		
+		EasyMock.expect(person1.getZip()).andReturn("22360").times(2);
+		EasyMock.replay(person1);
+		
+		EasyMock.expect(person2.getZip()).andReturn("12345").times(3);
+		EasyMock.replay(person2);
+		
+		EasyMock.expect(person3.getZip()).andReturn("12340").times(2);
+		EasyMock.replay(person3);
+		
+		EasyMock.expect(person4.getZip()).andReturn("12346").times(3);
+		EasyMock.replay(person4);
+		
 		addressBook.sortAddressBookByZip();
 		assertEquals("First person sorted correctly", person3, addressBook.getPersons().get(0));
-		assertEquals("Second person sorted correctly", person4, addressBook.getPersons().get(1));
-		assertEquals("Third person sorted correctly", person1, addressBook.getPersons().get(2));
-		assertEquals("Fourth person sorted correctly", person2, addressBook.getPersons().get(3));
+		assertEquals("Second person sorted correctly", person2, addressBook.getPersons().get(1));
+		assertEquals("Third person sorted correctly", person4, addressBook.getPersons().get(2));
+		assertEquals("Fourth person sorted correctly", person1, addressBook.getPersons().get(3));
 	}
 	
 	@Test
@@ -89,35 +131,79 @@ public class AddressBookTest {
 		EasyMock.expect(searchedPerson.contentCount()).andReturn(1);
 		EasyMock.replay(searchedPerson);
 		
-		EasyMock.expect(personMock1.getFirstName()).andReturn("John").times(3);
-/*		EasyMock.expect(personMock1.getLastName()).andReturn("Bbb");
-		EasyMock.expect(personMock1.getAddress()).andReturn("22 Big Road");
-		EasyMock.expect(personMock1.getCity()).andReturn("Miami");
-		EasyMock.expect(personMock1.getState()).andReturn("FL");
-		EasyMock.expect(personMock1.getZip()).andReturn("12850");
-		EasyMock.expect(personMock1.getPhone()).andReturn("123 234 3456");*/
-		EasyMock.replay(personMock1);
+		EasyMock.expect(person1.getFirstName()).andReturn("John").times(3);
+		EasyMock.replay(person1);
 		
-		EasyMock.expect(personMock2.getFirstName()).andReturn("Jane").times(2);
-/*		EasyMock.expect(personMock2.getLastName()).andReturn("Bbb");
-		EasyMock.expect(personMock2.getAddress()).andReturn("22 Big Road");
-		EasyMock.expect(personMock2.getCity()).andReturn("Miami");
-		EasyMock.expect(personMock2.getState()).andReturn("FL");
-		EasyMock.expect(personMock2.getZip()).andReturn("12890");
-		EasyMock.expect(personMock2.getPhone()).andReturn("123 234 3456");*/
-		EasyMock.replay(personMock2);
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane").times(2);
+		EasyMock.replay(person2);
 
-		//Person person = new Person("John", null, null, null, null, null, null);
-		addressBookWithMock.search(searchedPerson);
+		addressBook.search(searchedPerson);
 		
-		assertEquals("Should find one person", 1, addressBookWithMock.getPersons().size());
-		assertEquals("Should find correct person", "John", addressBookWithMock.getPerson(0).getFirstName());
+		assertEquals("Should find one person", 1, addressBook.getPersons().size());
+		assertEquals("Should find correct person", "John", addressBook.getPerson(0).getFirstName());
+	}
+	
+	@Test
+	public void testSearchWithFullContents() {
+		
+		Person searchedPerson = EasyMock.createMock("searchedPerson", Person.class); 
+		
+		EasyMock.expect(searchedPerson.getFirstName()).andReturn("John").times(4);
+		EasyMock.expect(searchedPerson.getLastName()).andReturn("Smith").times(4);
+		EasyMock.expect(searchedPerson.getAddress()).andReturn("Main Road").times(3);
+		EasyMock.expect(searchedPerson.getCity()).andReturn("York").times(3);
+		EasyMock.expect(searchedPerson.getState()).andReturn("New York").times(3);
+		EasyMock.expect(searchedPerson.getZip()).andReturn("123").times(3);
+		EasyMock.expect(searchedPerson.getPhone()).andReturn("123456").times(3);
+		EasyMock.expect(searchedPerson.contentCount()).andReturn(7);
+		EasyMock.replay(searchedPerson);
+		
+		EasyMock.expect(person1.getFirstName()).andReturn("John").times(3);
+		EasyMock.expect(person1.getLastName()).andReturn("Smith").times(2);
+		EasyMock.expect(person1.getAddress()).andReturn("Main Road").times(3);
+		EasyMock.expect(person1.getCity()).andReturn("New York").times(2);
+		EasyMock.expect(person1.getState()).andReturn("New York").times(2);
+		EasyMock.expect(person1.getZip()).andReturn("123456").times(2);
+		EasyMock.expect(person1.getPhone()).andReturn("123456").times(2);
+		EasyMock.replay(person1);
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane").times(2);
+		EasyMock.expect(person2.getLastName()).andReturn("Smith").times(2);
+		EasyMock.expect(person2.getAddress()).andReturn(null);
+		EasyMock.expect(person2.getCity()).andReturn(null).times(2);
+		EasyMock.expect(person2.getState()).andReturn(null).times(2);
+		EasyMock.expect(person2.getZip()).andReturn(null).times(2);
+		EasyMock.expect(person2.getPhone()).andReturn(null).times(2);
+		EasyMock.replay(person2);
+		
+		addressBook.search(searchedPerson);
+		
+		assertEquals("Should find one person", 1, addressBook.getPersons().size());
+		assertEquals("Should find correct person", "John", addressBook.getPerson(0).getFirstName());
 	}
 	
 	@Test
 	public void testSearchWithMultipleResults() {
-		Person person = new Person(null, "Bbb", null, null, null, null, null);
-		addressBook.search(person);
+		
+		Person searchedPerson = EasyMock.createMock("searchedPerson", Person.class); 
+		
+		EasyMock.expect(searchedPerson.getFirstName()).andReturn(null).times(2);
+		EasyMock.expect(searchedPerson.getLastName()).andReturn("Smith").times(4);
+		EasyMock.expect(searchedPerson.getAddress()).andReturn(null);
+		EasyMock.expect(searchedPerson.getCity()).andReturn(null);
+		EasyMock.expect(searchedPerson.getState()).andReturn(null);
+		EasyMock.expect(searchedPerson.getZip()).andReturn(null);
+		EasyMock.expect(searchedPerson.getPhone()).andReturn(null);
+		EasyMock.expect(searchedPerson.contentCount()).andReturn(1);
+		EasyMock.replay(searchedPerson);
+		
+		EasyMock.expect(person1.getFirstName()).andReturn("John");
+		EasyMock.expect(person1.getLastName()).andReturn("Smith").times(2);
+		EasyMock.replay(person1);
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane");
+		EasyMock.expect(person2.getLastName()).andReturn("Smith").times(2);
+		EasyMock.replay(person2);
+		
+		addressBook.search(searchedPerson);
 		
 		assertEquals("Should find two people", 2, addressBook.getPersons().size());
 		assertEquals("Should find the correct first person", "John", addressBook.getPerson(0).getFirstName());
@@ -126,9 +212,13 @@ public class AddressBookTest {
 	
 	@Test
 	public void testSearchWithNoResults() {
-		Person person = new Person(null, null, null, null, null, null, null);
-		addressBook.search(person);
 		
+		Person searchedPerson = EasyMock.createMock("searchedPerson", Person.class); 
+		EasyMock.expect(searchedPerson.contentCount()).andReturn(0);
+		EasyMock.replay(searchedPerson);
+
+		addressBook.search(searchedPerson);
+
 		assertEquals("Should find no results", 0, addressBook.getPersons().size());
 	}
 }

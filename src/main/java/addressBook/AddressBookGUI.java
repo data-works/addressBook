@@ -426,7 +426,6 @@ public class AddressBookGUI {
             labels[4].setText(p.getState());
             labels[5].setText(p.getZip());
             labels[6].setText(p.getPhone());
-            
     	}
     }
 	

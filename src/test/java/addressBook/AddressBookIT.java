@@ -13,7 +13,7 @@ import main.java.addressBook.Person;
 public class AddressBookIT {
 
 	AddressBook addressBook;
-	Person person1, person2, person3, person4;
+	Person person1, person2, person3, person4, person5;
 
 	@Before
 	public void setUp() throws Exception {
@@ -21,6 +21,7 @@ public class AddressBookIT {
 		person2 = new Person("Jane", "Ccc", "22 Big Road", "Miami", "FL", "12899", "123 234 3456");	
 		person3 = new Person("John", "Bbb", "22 Big Road", "Miami", "FL", "12850", "123 234 3456");	
 		person4 = new Person("Jane", "Bbb", "22 Big Road", "Miami", "FL", "12890", "123 234 3456");	
+		person5 = new Person(null, null, "Main Street", "Atlanta", "GA", "12850", "123 234 8970");	
 
 		addressBook = new AddressBook();
 		addressBook.addPerson(person1);
@@ -36,12 +37,6 @@ public class AddressBookIT {
 		person2 = null;
 		person3 = null;
 		person4 = null;
-	}
-
-	@Test
-	public void testRemovePerson() {
-		addressBook.removePerson(person2);
-		assertFalse("Address book should no longer contain removed person", addressBook.getPersons().contains(person2));
 	}
 
 	@Test
@@ -70,6 +65,17 @@ public class AddressBookIT {
 		assertEquals("Should find one person", 1, addressBook.getPersons().size());
 		assertEquals("Should find correct person", "John", addressBook.getPerson(0).getFirstName());
 	}
+	
+	@Test
+	public void testSearch2() {
+		addressBook.addPerson(person5);
+		Person person = new Person("John", "Bbb", "22 Big Road", "Miami", "FL", "12850", "123 234 3456");
+		addressBook.search(person);
+
+		assertEquals("Should find one person", 1, addressBook.getPersons().size());
+		assertEquals("Should find correct person", "John", addressBook.getPerson(0).getFirstName());
+	}
+
 
 	@Test
 	public void testSearchWithMultipleResults() {

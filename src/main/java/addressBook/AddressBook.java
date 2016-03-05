@@ -71,7 +71,7 @@ public class AddressBook {
 			@Override
             public int compare(Person lhs, Person rhs) {
 				
-				if(lhs.getFirstName() != null || rhs.getFirstName() != null){
+				if(lhs.getFirstName() != null && rhs.getFirstName() != null){
 					return lhs.getLastName().concat(lhs.getFirstName()).compareTo(rhs.getLastName().concat(rhs.getFirstName()));
 				} else {
 					return lhs.getLastName().compareTo(rhs.getLastName());
@@ -109,11 +109,14 @@ public class AddressBook {
 		
 		int itemCount = 0;
 		for(Person p : persons) {
-			if(person.getFirstName() != null && p.getFirstName() != null 
+			if(person.getFirstName() != null 
+					&& p.getFirstName() != null 
 					&& p.getFirstName().contains(person.getFirstName())) {
 				itemCount++;
 			}
-			if(itemCount < contentCount && person.getLastName() != null && p.getLastName() != null 
+			if(itemCount < contentCount 
+					&& person.getLastName() != null 
+					&& p.getLastName() != null 
 					&& p.getLastName().contains(person.getLastName())) {
 				itemCount++;
 			}
