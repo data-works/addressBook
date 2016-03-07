@@ -1,104 +1,94 @@
 package test.java.addressBook;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import main.java.addressBook.AddressBook;
 import main.java.addressBook.AddressBookController;
-import main.java.addressBook.Person;
+import main.java.addressBook.FileSystem;
 
 public class AddressBookControllerTest {
 
-	private AddressBookController controller1, controller2;
-	private AddressBook addressBook, addressBook2;
-	
+	private AddressBookController controller;
+	private AddressBook addressBook;
+	private FileSystem fileSystem;
+	private File file;
+
 	@Before
 	public void setUp() throws Exception {
-		controller1 = new AddressBookController("testBooks/collectionOfBooks");
-		controller2 = new AddressBookController();
-		addressBook = new AddressBook();
-		addressBook2 = new AddressBook();
-		addressBook.setTitle("testing");
-		addressBook2.setTitle("testing");
-		Person person = new Person();
-		person.setFirstName("John");
-		addressBook2.addPerson(person);
+		file = new File("testBooks/tempBook.txt");
+		fileSystem = EasyMock.createMock("FileSystem", FileSystem.class);
+		controller = new AddressBookController();
+		addressBook = EasyMock.createMock("addressBook", AddressBook.class);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		controller1 = null;
-		controller2 = null;
+		controller = null;
 		addressBook = null;
-		addressBook2 = null;
+		fileSystem = null;
+		file = null;
 	}
 
 	@Test
-	public void testListAllAddressBooks() throws FileNotFoundException, IOException {
-		
-		List<AddressBook> addressBooks = controller1.listAllAddressBooks();
-		assertEquals("Should have the correct number of address books", 3, addressBooks.size());
-		assertEquals("Title should match", "A Sample Address Book", addressBooks.get(0).getTitle());
-		assertEquals("First name should match", "John", addressBooks.get(0).getPersons().get(0).getFirstName());
-		assertEquals("Last name should match", "Sample", addressBooks.get(0).getPersons().get(0).getLastName());
-		assertEquals("Address should match", "123 Sample Road", addressBooks.get(0).getPersons().get(0).getAddress());
-		assertEquals("City should match", "New York", addressBooks.get(0).getPersons().get(0).getCity());
-		assertEquals("State should match", "NY", addressBooks.get(0).getPersons().get(0).getState());
-		assertEquals("ZIP should match", "12345", addressBooks.get(0).getPersons().get(0).getZip());
-		assertEquals("Phone should match", "123 456 7890", addressBooks.get(0).getPersons().get(0).getPhone());
+	public void testLoadAddressBook() throws FileNotFoundException, IOException {
+		EasyMock.expect(fileSystem.readFile(file)).andReturn(addressBook);
+		EasyMock.replay(fileSystem);
+
+		controller.setFileSystem(fileSystem);
+		controller.loadAddressBook(file);
+
+		assertEquals("Should have loaded the correct address book", addressBook, controller.getAddressBook());
 	}
 	
-	@Test
-	public void testGetAddressBook() throws FileNotFoundException, IOException {
-		
-		File file = new File("testBooks/sampleBook.txt");
-		AddressBook addressBook = controller2.getAddressBook(file);
-		assertEquals("Should read a file correctly and return an address book of the correct size", 2, 
-				addressBook.getPersons().size());
-		assertEquals("Title should match", "A Sample Address Book", addressBook.getTitle());
-		assertEquals("First name should match", "John",addressBook.getPersons().get(0).getFirstName());
-		assertEquals("Last name should match", "Sample", addressBook.getPersons().get(0).getLastName());
-		assertEquals("Address should match", "123 Sample Road", addressBook.getPersons().get(0).getAddress());
-		assertEquals("City should match", "New York", addressBook.getPersons().get(0).getCity());
-		assertEquals("State should match", "NY", addressBook.getPersons().get(0).getState());
-		assertEquals("ZIP should match", "12345", addressBook.getPersons().get(0).getZip());
-		assertEquals("Phone should match", "123 456 7890", addressBook.getPersons().get(0).getPhone());
+	@Test(expected=NullPointerException.class)
+	public void testLoadAddressBookNull() throws FileNotFoundException, IOException {
+		controller.loadAddressBook(null);
 	}
-	
+
 	@Test
 	public void testSetAddressBook() throws FileNotFoundException, IOException {
-		
-		controller2.setAddressBook(addressBook);
-		assertEquals("Should have added the address book", "testing", controller2.getAddressBook().getTitle());
+		controller.setAddressBook(addressBook);
+		assertEquals("Should have added the address book", addressBook, controller.getAddressBook());
+	}
+
+	@Test
+	public void testSaveAddressBook() throws IOException {
+		controller.setFileSystem(fileSystem);
+		fileSystem.saveFile(addressBook, file);
+
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(fileSystem);
+
+		controller.setAddressBook(addressBook);
+		controller.saveAddressBook(file);
+
+		EasyMock.verify(fileSystem);
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testSaveAddressBookNull() throws IOException {
+		controller.setAddressBook(null);
+		controller.saveAddressBook(file);
+	}
+	
+	@Test(expected=NullPointerException.class)
+	public void testSaveFileNull() throws IOException {
+		controller.setAddressBook(addressBook);
+		controller.saveAddressBook(null);
 	}
 	
 	@Test
-	public void testSaveAddressBook() throws IOException {
-		
-		File file = new File("testBooks/tempBook.txt");
-		file.delete();
-		
-		controller2.setAddressBook(addressBook2);
-		controller2.saveAddressBook(file);
-		
-		FileReader fileReader = new FileReader(file);
-		BufferedReader bufferedReader = new BufferedReader(fileReader);
-		String line = null;
-		
-		assertEquals("Address book title should match", "testing", bufferedReader.readLine().trim());
-		assertEquals("First name should match", "John", bufferedReader.readLine().trim());
-		
-		bufferedReader.close();
-		file.delete();
+	public void testSetFileSystem() {
+		controller.setFileSystem(fileSystem);
+		assertEquals("Should have set the correct FileSystem", fileSystem, controller.getFileSystem());
 	}
 }

@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The Class AddressBookController.
@@ -13,8 +11,7 @@ import java.util.List;
 public class AddressBookController {
 	
 	private AddressBook addressBook;
-	private List<AddressBook> addressBooks;
-	private String addressBookDirectory = "books";
+	private FileSystem fileSystem;
 	
 	/**
 	 * Instantiates a new address book controller.
@@ -23,52 +20,8 @@ public class AddressBookController {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public AddressBookController() throws FileNotFoundException, IOException {
-		addressBooks = getAddressBooksFromFiles(getAddressBookFiles());
 		addressBook = new AddressBook();
-	}
-	
-	/**
-	 * Instantiates a new address book controller.
-	 *
-	 * @param addressBookDirectory the address book directory
-	 * @throws FileNotFoundException the file not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public AddressBookController(String addressBookDirectory) throws FileNotFoundException, IOException {
-		this.addressBookDirectory = addressBookDirectory;
-		addressBooks = getAddressBooksFromFiles(getAddressBookFiles());
-		addressBook = new AddressBook();
-	}
-	
-	/**
-	 * Gets the address book files.
-	 *
-	 * @return the address book files
-	 */
-	private File[] getAddressBookFiles() {
-		return new File(addressBookDirectory).listFiles();
-	}
-	
-	/**
-	 * Gets the address books from files.
-	 *
-	 * @param files the files
-	 * @return the address books from files
-	 * @throws FileNotFoundException the file not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private List<AddressBook> getAddressBooksFromFiles(File[] files) throws FileNotFoundException, IOException {
-		
-		List<AddressBook> addressBooks = new ArrayList<AddressBook>();
-		
-		FileSystem fileSystem = new FileSystem();
-		
-		for(File file : files) {
-			AddressBook addressBook = fileSystem.readFile(file);
-			addressBooks.add(addressBook);
-		}
-		
-		return addressBooks;
+		fileSystem = new FileSystem();
 	}
 	
 	/**
@@ -79,12 +32,10 @@ public class AddressBookController {
 	 * @throws FileNotFoundException the file not found exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public AddressBook getAddressBook(File file) throws FileNotFoundException, IOException {
-		
-		FileSystem fileSystem = new FileSystem();
-		AddressBook addressBook = fileSystem.readFile(file);
-		
-		return addressBook;
+	public void loadAddressBook(File file) throws FileNotFoundException, IOException {
+		if(file != null) {
+			addressBook = fileSystem.readFile(file);
+		}
 	}
 	
 	/**
@@ -96,18 +47,11 @@ public class AddressBookController {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void saveAddressBook(File file) throws UnsupportedEncodingException, FileNotFoundException, IOException {
-		FileSystem fileSystem = new FileSystem();
-		fileSystem.saveFile(addressBook, file);
-	}
-	
-	/**
-	 * List all address books.
-	 *
-	 * @return the list
-	 */
-	public List<AddressBook> listAllAddressBooks() {
-		
-		return addressBooks;
+		if(file != null && addressBook != null) {
+			fileSystem.saveFile(addressBook, file);
+		} else {
+			throw new NullPointerException();
+		}
 	}
 
 	/**
@@ -126,5 +70,23 @@ public class AddressBookController {
 	 */
 	public void setAddressBook(AddressBook addressBook) {
 		this.addressBook = addressBook;
+	}
+	
+	/**
+	 * Sets the file system.
+	 *
+	 * @param fileSystem the new file system
+	 */
+	public void setFileSystem(FileSystem fileSystem) {
+		this.fileSystem = fileSystem;
+	}
+	
+	/**
+	 * Gets the file system.
+	 *
+	 * @return the file system
+	 */
+	public FileSystem getFileSystem() {
+		return fileSystem;
 	}
 }

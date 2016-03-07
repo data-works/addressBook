@@ -18,7 +18,6 @@ public class AddressBookTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		
 		person1 = EasyMock.createMock("Person1", Person.class);
 		person2 = EasyMock.createMock("Person2", Person.class);
 		person3 = EasyMock.createMock("Person3", Person.class); 
@@ -50,7 +49,6 @@ public class AddressBookTest {
 	
 	@Test
 	public void testSortAddressBookByName() {
-		
 		addressBook.addPerson(person3);
 		addressBook.addPerson(person4);
 		
@@ -79,7 +77,6 @@ public class AddressBookTest {
 	
 	@Test(expected=NullPointerException.class)
 	public void testSortByNameNull(){
-		
 		EasyMock.expect(person1.getFirstName()).andReturn(null);
 		EasyMock.expect(person1.getLastName()).andReturn(null);
 		EasyMock.replay(person1);
@@ -93,7 +90,6 @@ public class AddressBookTest {
 	
 	@Test
 	public void testSortAddressBookByZip() {
-		
 		addressBook.addPerson(person3);
 		addressBook.addPerson(person4);
 		

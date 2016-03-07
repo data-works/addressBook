@@ -109,14 +109,12 @@ public class AddressBook {
 		
 		int itemCount = 0;
 		for(Person p : persons) {
-			if(person.getFirstName() != null 
-					&& p.getFirstName() != null 
+			if(person.getFirstName() != null && p.getFirstName() != null 
 					&& p.getFirstName().contains(person.getFirstName())) {
 				itemCount++;
 			}
 			if(itemCount < contentCount 
-					&& person.getLastName() != null 
-					&& p.getLastName() != null 
+					&& person.getLastName() != null	&& p.getLastName() != null 
 					&& p.getLastName().contains(person.getLastName())) {
 				itemCount++;
 			}

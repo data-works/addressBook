@@ -373,7 +373,9 @@ public class AddressBookGUI {
 				if (option == JFileChooser.APPROVE_OPTION) {
 				    file = fileChooser.getSelectedFile();
 				    try {
-						setAddressBook(controller.getAddressBook(file));
+				    	controller.loadAddressBook(file);
+						setAddressBook(controller.getAddressBook());
+						refreshAddressBook(addressBook);
 					} catch (FileNotFoundException e1) {
 						reportError("File not found");
 					} catch (IOException e1) {
@@ -493,9 +495,9 @@ public class AddressBookGUI {
 		File file = new File("books/sampleBookLong.txt");
 		
 		AddressBookController controller = new AddressBookController();
-		AddressBook book = controller.getAddressBook(file);
+		controller.loadAddressBook(file);
 		
-		AddressBookGUI gui = new AddressBookGUI(controller, book);
+		AddressBookGUI gui = new AddressBookGUI(controller, controller.getAddressBook());
 	}
 	
 	/**

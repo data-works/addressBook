@@ -11,8 +11,8 @@ import org.junit.runners.Suite;
 	AddressBookControllerTest.class,
 	AddressBookGUITest.class,
 	AddressBookIT.class, 
+	AddressBookControllerIT.class,
 	//FileSystemIT.class,
-	//AddressBookControllerIT.class,
 	//AddressBookGUIIT.class
 })
 public class TestSuite {
