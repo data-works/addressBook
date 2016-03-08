@@ -11,10 +11,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Observable;
 
-import javax.swing.AbstractListModel;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -29,7 +26,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -47,8 +43,6 @@ public class AddressBookGUI {
 	public JMenuBar menuBar;
 	public JMenu menu;
 	private JLabel addressBookTitle;
-	private AbstractListModel nameListModel;
-	private JLabel personInfo;
 	public JList nameList;
 	private DefaultListModel<String> listModel;
 	private JButton addButton;
@@ -56,10 +50,12 @@ public class AddressBookGUI {
 	public JButton deleteButton;
 	public JButton sortByNameButton;
 	public JButton sortByZipButton;
+	public JButton SearchButton; // TODO
 	private JMenuItem newItem;
 	private JMenuItem openItem;
 	private JMenuItem saveItem;
 	private JMenuItem saveAsItem;
+	private JMenuItem editTitleItem;
 	private JMenuItem printItem;
 	private JMenuItem quitItem;
 	private JScrollPane scrollPane;
@@ -74,11 +70,8 @@ public class AddressBookGUI {
 	 * @param controller the controller
 	 * @param addressBook the address book
 	 */
-	public AddressBookGUI(AddressBookController controller, AddressBook addressBook) {
+	public AddressBookGUI(AddressBookController controller) {
 		this.controller = controller;
-		this.addressBook = addressBook;
-
-		addressBookTitle = new JLabel(addressBook.getTitle());
 
 		frame = new JFrame("");
 		menuBar = new JMenuBar();
@@ -92,6 +85,7 @@ public class AddressBookGUI {
 		openItem = new JMenuItem("Open", UIManager.getIcon("FileView.directoryIcon"));
 		saveItem = new JMenuItem("Save", UIManager.getIcon("FileView.floppyDriveIcon"));
 		saveAsItem = new JMenuItem("Save As...", UIManager.getIcon("FileView.floppyDriveIcon"));
+		editTitleItem = new JMenuItem("Edit Title", UIManager.getIcon("FileChooser.detailsViewIcon"));
 		printItem = new JMenuItem("Print", UIManager.getIcon("FileView.fileIcon"));
 		quitItem = new JMenuItem("Quit", UIManager.getIcon("InternalFrame.paletteCloseIcon"));
 		listModel = new DefaultListModel<>();
@@ -102,16 +96,21 @@ public class AddressBookGUI {
 		openItem.setMnemonic(KeyEvent.VK_O);
 		saveItem.setMnemonic(KeyEvent.VK_S);
 		saveAsItem.setMnemonic(KeyEvent.VK_A);
+		editTitleItem.setMnemonic(KeyEvent.VK_E);
 		printItem.setMnemonic(KeyEvent.VK_P);
 		quitItem.setMnemonic(KeyEvent.VK_Q);
+		
 		menu.add(newItem);
 		menu.add(openItem);
+		menu.add(editTitleItem);
 		menu.add(saveItem);
 		menu.add(saveAsItem);
 		menu.add(printItem);
 		menu.add(quitItem);
 		menuBar.add(menu);
+		
 		frame.setJMenuBar(menuBar);
+		setMenuEnabled(false);
 		
 		/**
 		 * Begin adding content to GUI
@@ -122,7 +121,7 @@ public class AddressBookGUI {
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		
-		addressBookTitle = new JLabel(addressBook.getTitle());
+		addressBookTitle = new JLabel();
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 4;
@@ -164,12 +163,6 @@ public class AddressBookGUI {
 		c.gridheight = 10;
 		c.gridwidth = 2;
 		
-		/**
-		 * Add all people to list
-		 */
-		for (Person p : addressBook.getPersons()) {
-			listModel.addElement(p.getFirstName() + " " + p.getLastName());
-		}
 		nameList = new JList<>(listModel);
 		nameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		nameList.setSelectedIndex(0);
@@ -190,6 +183,8 @@ public class AddressBookGUI {
 			info.add(labels[i]);
 		}
 		
+		labels[0].setText("Please open an existing address book or create a new one.");
+		
 		panel.add(info, c);
 		
 		/**
@@ -199,16 +194,15 @@ public class AddressBookGUI {
 		frame.setSize(900, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null); 
-		//frame.pack();
 		frame.setResizable(false);
         frame.setVisible(true);
         
+        // ActionListeners
         
 		/**
 		 * Displays the selected perons's info on the side
 		 */
 		nameList.addListSelectionListener(new ListSelectionListener() {
-
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
@@ -219,8 +213,6 @@ public class AddressBookGUI {
                 }
             }
         });
-        
-        // ActionListeners
         
 		/**
 		 * Sort address book by Last Name
@@ -270,9 +262,10 @@ public class AddressBookGUI {
 		        panel.add(zip);
 		        panel.add(new JLabel("Phone Number:"));
 		        panel.add(phone);
-		        int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+		        int result = JOptionPane.showConfirmDialog(null, panel, "New Contact",
 		            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-		        if (result == JOptionPane.OK_OPTION) {
+		        
+		        if(result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()) {
 		        	newPerson.setFirstName(fname.getText());
 		        	newPerson.setLastName(lname.getText());
 		        	newPerson.setAddress(address.getText());
@@ -282,8 +275,10 @@ public class AddressBookGUI {
 		        	newPerson.setPhone(phone.getText());
 		        	addressBook.addPerson(newPerson);
 		        	refreshAddressBook(addressBook);
+		        } else if(result == JOptionPane.OK_OPTION && (fname.getText().isEmpty() || lname.getText().isEmpty())) {
+		        	displayPopup("First and last name are mandatory fields. New contact was not created.");
 		        } else {
-		        	
+		        	displayPopup("Action cancelled. New contact was not created.");
 		        }
 			}
 		});
@@ -294,7 +289,7 @@ public class AddressBookGUI {
 					JPanel panel = new JPanel(new GridLayout(0, 1));
 					JLabel warning = new JLabel("Are you sure you want to delete the selected contact?");
 					panel.add(warning);
-					int result = optionPane.showConfirmDialog(null, panel, "Delete",
+					int result = optionPane.showConfirmDialog(null, panel, "Delete Contact",
 				            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 					if (result == JOptionPane.OK_OPTION) {
 						addressBook.removePersonByIndex(nameList.getSelectedIndex());
@@ -336,9 +331,9 @@ public class AddressBookGUI {
 		        panel.add(zip);
 		        panel.add(new JLabel("Phone Number:"));
 		        panel.add(phone);
-		        int result = JOptionPane.showConfirmDialog(null, panel, "Test",
+		        int result = JOptionPane.showConfirmDialog(null, panel, "Edit Contact",
 		            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-		        if (result == JOptionPane.OK_OPTION) {
+		        if (result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()) {
 		        	person.setFirstName(fname.getText());
 		        	person.setLastName(lname.getText());
 		        	person.setAddress(address.getText());
@@ -348,24 +343,35 @@ public class AddressBookGUI {
 		        	person.setPhone(phone.getText());        	
 		        	refreshWithSelection(addressBook, nameList.getSelectedIndex());
 		        	setPerson(person);
-		        	
+		        } else if(result == JOptionPane.OK_OPTION && (fname.getText().isEmpty() || lname.getText().isEmpty())) {
+		        	displayPopup("First and last name are mandatory fields. Changes were not saved.");
 		        } else {
-		        	
-		        }
-				
+		        	displayPopup("Action cancelled. Changes were not saved.");
+		        }				
 			}
 		});
 		
-		/*
+		// Create a new addressBook
 		newItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-
-				// TODO: Popup to ask user for name of new address book
-				
+				String title = JOptionPane.showInputDialog(null, "Please enter the title of the new address book:",
+						"Title", JOptionPane.PLAIN_MESSAGE);
+				if(title == null) {
+					JOptionPane.showMessageDialog(frame, "Creation of new address book was cancelled.");
+				} else if(title.isEmpty()) {
+					JOptionPane.showMessageDialog(frame, "The title cannot be empty. The address book was not created.");
+				} else {
+					setAddressBook(new AddressBook());
+					addressBook.setTitle(title);
+					refreshAddressBook(addressBook);
+					refreshGuiTitle();
+					setMenuEnabled(true);
+					displayMessageNoSelection();
+				}
 			}
 		});
-		*/
 		
+		// Open an existing addressBook from a file
 		openItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
@@ -374,46 +380,74 @@ public class AddressBookGUI {
 				    file = fileChooser.getSelectedFile();
 				    try {
 				    	controller.loadAddressBook(file);
-						setAddressBook(controller.getAddressBook());
-						refreshAddressBook(addressBook);
+						setAddressBook(controller.getAddressBook());						
+						refreshAddressBook(addressBook);		
+						refreshGuiTitle();
+						setMenuEnabled(true);
+						displayMessageNoSelection();
 					} catch (FileNotFoundException e1) {
-						reportError("File not found");
+						displayPopup("File not found");
 					} catch (IOException e1) {
-						reportError(e1.getMessage());
+						displayPopup(e1.getMessage());
 					}
 				}
 			}
 		});
-		
+
+		// Save the current addressBook under the same name
 		saveItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				try {
-					controller.saveAddressBook(file);
-				} catch (FileNotFoundException e1) {
-					reportError("File not found");
-				} catch (IOException e1) {
-					reportError(e1.getMessage());
-				}
+				saveAddressBook();
 			}
 		});
-		
+
+		// Save the current addressBook under a different name
 		saveAsItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
 				int option = fileChooser.showSaveDialog(frame);
 				if (option == JFileChooser.APPROVE_OPTION) {
 				    file = fileChooser.getSelectedFile();
-				    try {
-				    	controller.saveAddressBook(file);
-					} catch (FileNotFoundException e1) {
-						reportError("File not found");
-					} catch (IOException e1) {
-						reportError(e1.getMessage());
-					}
+				    saveAddressBook();
 				}
 			}
 		});
+		
+		// Edit the title of the addressBook
+		editTitleItem.addActionListener(new ActionListener()	{
+			public void actionPerformed(ActionEvent e) {
+				String title = JOptionPane.showInputDialog("Please edit the title of the address book:", 
+						addressBook.getTitle());
+				if(title == null) {
+					JOptionPane.showMessageDialog(frame, "Action cancelled. Title has not been changed.");
+				} else if(title.isEmpty()) {
+					JOptionPane.showMessageDialog(frame, "The title cannot be empty. Title has not been changed.");
+				} else {
+					addressBook.setTitle(title);
+					refreshGuiTitle();
+				}
+			}
+		});
+		
+		// Print the address book
+		printItem.addActionListener(new ActionListener()	{
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		
+		// Close the application
+		quitItem.addActionListener(new ActionListener()	{
+			public void actionPerformed(ActionEvent e) {
+				int result = optionPane.showConfirmDialog(null, "Are you sure you want to exit the program?", "Exit",
+			            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (result == JOptionPane.OK_OPTION) {
+					System.exit(0);
+		        }
+			}
+		});
 	}
+	
 	/**
 	 * Will keep the selected person's info in the side bar
 	 * 
@@ -434,21 +468,20 @@ public class AddressBookGUI {
 	/**
 	 * Refresh address book.
 	 *
-	 * @param ab the ab
+	 * @param ab the adressBook
 	 */
 	public void refreshAddressBook(AddressBook ab) {
 		listModel.removeAllElements();
 		for (Person p : ab.getPersons()) {
 			listModel.addElement(p.getFirstName() + " " + p.getLastName());
 		}
-		nameList.setSelectedIndex(0);
+		nameList.clearSelection();
 	}
 	
 	/**
-	 * Refresh address book after a edit has happened.
-	 * This method is necessary because it needs the index of the person in the list 
+	 * Refresh address book while keeping the currently selected item selected.
 	 * 
-	 * @param ab
+	 * @param addressBook
 	 * @param index
 	 */
 	public void refreshWithSelection(AddressBook ab, int index) {
@@ -481,23 +514,8 @@ public class AddressBookGUI {
 	 *
 	 * @param message the message
 	 */
-	public void reportError(String message) {
-		
-		// TODO: Popup to display error message
-	}
-	
-	public void update(Observable o, Object arg) {
-		
-	}
-	
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		
-		File file = new File("books/sampleBookLong.txt");
-		
-		AddressBookController controller = new AddressBookController();
-		controller.loadAddressBook(file);
-		
-		AddressBookGUI gui = new AddressBookGUI(controller, controller.getAddressBook());
+	public void displayPopup(String message) {
+		JOptionPane.showMessageDialog(frame, message);
 	}
 	
 	/**
@@ -507,5 +525,66 @@ public class AddressBookGUI {
 	 */
 	public void setOptionPane(OptionPane o) {
 		this.optionPane = o; 
+	}
+	
+	/**
+	 * Refresh gui title.
+	 */
+	public void refreshGuiTitle() {
+		this.addressBookTitle.setText(addressBook.getTitle());
+	}
+	
+	/**
+	 * Save the address book.
+	 */
+	public void saveAddressBook() {
+		try {
+			controller.saveAddressBook(file);
+			displayPopup("Address book has been saved.");
+		} catch (FileNotFoundException e1) {
+			displayPopup("File not found");
+		} catch (IOException e1) {
+			displayPopup(e1.getMessage());
+		}
+	}
+	
+	/**
+	 * Displays a message when no contact has been selected.
+	 */
+	public void displayMessageNoSelection() {
+		if(addressBook.getPersons().size() == 0) {
+			labels[0].setText("Please create a new contact.");
+		} else {
+			labels[0].setText("Please select a contact from the left or create a new contact.");
+		}
+	}
+	
+	/**
+	 * Enables or disables the menu.
+	 *
+	 * @param bool the enabled boolean
+	 */
+	public void setMenuEnabled(Boolean bool) {
+		saveItem.setEnabled(bool);
+		saveAsItem.setEnabled(bool);
+		editTitleItem.setEnabled(bool);
+		printItem.setEnabled(bool);
+		addButton.setEnabled(bool);
+		deleteButton.setEnabled(bool);
+		sortByNameButton.setEnabled(bool);
+		sortByZipButton.setEnabled(bool);
+		editButton.setEnabled(bool);
+	}
+	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 * @throws FileNotFoundException the file not found exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		AddressBookController controller = new AddressBookController();
+		AddressBookGUI gui = new AddressBookGUI(controller);
 	}
 }

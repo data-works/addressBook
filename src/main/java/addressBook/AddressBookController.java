@@ -19,7 +19,7 @@ public class AddressBookController {
 	 * @throws FileNotFoundException the file not found exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public AddressBookController() throws FileNotFoundException, IOException {
+	public AddressBookController() {
 		addressBook = new AddressBook();
 		fileSystem = new FileSystem();
 	}
@@ -35,6 +35,8 @@ public class AddressBookController {
 	public void loadAddressBook(File file) throws FileNotFoundException, IOException {
 		if(file != null) {
 			addressBook = fileSystem.readFile(file);
+		} else {
+			throw new NullPointerException("No file specified.");
 		}
 	}
 	
@@ -49,8 +51,10 @@ public class AddressBookController {
 	public void saveAddressBook(File file) throws UnsupportedEncodingException, FileNotFoundException, IOException {
 		if(file != null && addressBook != null) {
 			fileSystem.saveFile(addressBook, file);
+		} else if (file == null) {
+			throw new NullPointerException("No file specified.");
 		} else {
-			throw new NullPointerException();
+			throw new NullPointerException("No address book specified.");
 		}
 	}
 

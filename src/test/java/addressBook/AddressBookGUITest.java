@@ -40,8 +40,10 @@ public class AddressBookGUITest {
 		addressBook2.addPerson(person);
 		
 		controller = new AddressBookController();
-		gui = new AddressBookGUI(controller, addressBook2);
-		guiEmptyList = new AddressBookGUI(controller, addressBook3);
+		controller.setAddressBook(addressBook2);
+		gui = new AddressBookGUI(controller);
+		controller.setAddressBook(addressBook3);
+		guiEmptyList = new AddressBookGUI(controller);
 	}
 
 	@After
