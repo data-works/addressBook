@@ -1,9 +1,17 @@
 package main.java.addressBook;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import javax.swing.JPanel;
 
 /**
  * The Class AddressBook.
@@ -144,7 +152,6 @@ public class AddressBook {
 			}
 			itemCount = 0;
 		}
-		
 		persons = searchResult;
 	}
 	
@@ -164,5 +171,37 @@ public class AddressBook {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	/**
+	 * Prints the selected contact.
+	 *
+	 * @param contact info JPanel
+	 */
+	public void printContact(JPanel info) {
+		PrinterJob pj = PrinterJob.getPrinterJob();
+		  pj.setJobName(" Print Component ");
+
+		  pj.setPrintable (new Printable() {    
+		    public int print(Graphics pg, PageFormat pf, int pageNum){
+		      if (pageNum > 0){
+		      return Printable.NO_SUCH_PAGE;
+		      }
+
+		      Graphics2D g2 = (Graphics2D) pg;
+		      g2.translate(pf.getImageableX(), pf.getImageableY());
+		      info.paint(g2);
+		      return Printable.PAGE_EXISTS;
+		    }
+		  });
+		  if (pj.printDialog() == false)
+		  return;
+
+		  try {
+		        pj.print();
+		  } catch (PrinterException ex) {
+		        // handle exception
+		  }
+		
 	}
 }
