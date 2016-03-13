@@ -118,32 +118,32 @@ public class AddressBook {
 		int itemCount = 0;
 		for(Person p : persons) {
 			if(person.getFirstName() != null && p.getFirstName() != null 
-					&& p.getFirstName().contains(person.getFirstName())) {
+					&& p.getFirstName().toLowerCase().contains(person.getFirstName().toLowerCase())) {
 				itemCount++;
 			}
 			if(itemCount < contentCount 
 					&& person.getLastName() != null	&& p.getLastName() != null 
-					&& p.getLastName().contains(person.getLastName())) {
+					&& p.getLastName().toLowerCase().contains(person.getLastName().toLowerCase())) {
 				itemCount++;
 			}
 			if(itemCount < contentCount && person.getAddress() != null && p.getAddress() != null 
-					&& p.getAddress().contains(person.getAddress())) {
+					&& p.getAddress().toLowerCase().contains(person.getAddress().toLowerCase())) {
 				itemCount++;
 			}
 			if(itemCount < contentCount && person.getCity() != null && p.getCity() != null 
-					&& p.getCity().contains(person.getCity())) {
+					&& p.getCity().toLowerCase().contains(person.getCity().toLowerCase())) {
 				itemCount++;
 			}
 			if(itemCount < contentCount && person.getState() != null && p.getState() != null 
-					&& p.getState().contains(person.getState())) {
+					&& p.getState().toLowerCase().contains(person.getState().toLowerCase())) {
 				itemCount++;
 			}
 			if(itemCount < contentCount && person.getZip() != null && p.getZip() != null 
-					&& p.getZip().contains(person.getZip())) {
+					&& p.getZip().toLowerCase().contains(person.getZip().toLowerCase())) {
 				itemCount++;
 			}
 			if(itemCount < contentCount && person.getPhone() != null && p.getPhone() != null 
-					&& p.getPhone().contains(person.getPhone())) {
+					&& p.getPhone().toLowerCase().contains(person.getPhone().toLowerCase())) {
 				itemCount++;
 			}
 			
@@ -171,37 +171,5 @@ public class AddressBook {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	/**
-	 * Prints the selected contact.
-	 *
-	 * @param contact info JPanel
-	 */
-	public void printContact(JPanel info) {
-		PrinterJob pj = PrinterJob.getPrinterJob();
-		  pj.setJobName(" Print Component ");
-
-		  pj.setPrintable (new Printable() {    
-		    public int print(Graphics pg, PageFormat pf, int pageNum){
-		      if (pageNum > 0){
-		      return Printable.NO_SUCH_PAGE;
-		      }
-
-		      Graphics2D g2 = (Graphics2D) pg;
-		      g2.translate(pf.getImageableX(), pf.getImageableY());
-		      info.paint(g2);
-		      return Printable.PAGE_EXISTS;
-		    }
-		  });
-		  if (pj.printDialog() == false)
-		  return;
-
-		  try {
-		        pj.print();
-		  } catch (PrinterException ex) {
-		        // handle exception
-		  }
-		
 	}
 }
