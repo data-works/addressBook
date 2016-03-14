@@ -71,6 +71,7 @@ public class AddressBookGUI {
 	public JTextField state;
 	public JTextField zip;
 	public JTextField phone;
+	private boolean changesMade = false;
 	
 	/**
 	 * Instantiates a new address book GUI.
@@ -296,6 +297,7 @@ public class AddressBookGUI {
 					sortByZipButton.setEnabled(true);
 					editButton.setEnabled(true);
 					searchButton.setEnabled(true);
+					changesMade = true;
 		        } else if(result == JOptionPane.OK_OPTION && (fname.getText().isEmpty() || lname.getText().isEmpty())) {
 		        	displayPopup("First and last name are mandatory fields. New contact was not created.");
 		        } else {
@@ -335,6 +337,7 @@ public class AddressBookGUI {
 							editButton.setEnabled(false);
 							searchButton.setEnabled(false);
 						}
+						changesMade = true;
 			        } else {
 			        	displayPopup("Deletion cancelled.");
 			        }
@@ -383,6 +386,7 @@ public class AddressBookGUI {
 		        	person.setPhone(phone.getText());        	
 		        	refreshWithSelection(addressBook, nameList.getSelectedIndex());
 		        	setPerson(person);
+		        	changesMade = true;
 		        } else if(result == JOptionPane.OK_OPTION && (fname.getText().isEmpty() || lname.getText().isEmpty())) {
 		        	displayPopup("First and last name are mandatory fields. Changes were not saved.");
 		        } else {
@@ -479,6 +483,7 @@ public class AddressBookGUI {
 					refreshGuiTitle();
 					setMenuEnabled(true);
 					displayMessageNoSelection();
+					changesMade = true;
 				}
 			}
 		});
@@ -537,6 +542,7 @@ public class AddressBookGUI {
 				} else {
 					addressBook.setTitle(title);
 					refreshGuiTitle();
+					changesMade = true;
 				}
 			}
 		});
@@ -551,11 +557,20 @@ public class AddressBookGUI {
 		// Close the application
 		quitItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				int result = optionPane.showConfirmDialog(null, "Are you sure you want to exit the program?", "Exit",
-			            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if (result == JOptionPane.OK_OPTION) {
-					System.exit(0);
-		        }
+				if (changesMade) {
+					int result = optionPane.showConfirmDialog(null, "There are unsaved changes. Are you sure you want to exit the program?", "Exit",
+				            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (result == JOptionPane.OK_OPTION) {
+						System.exit(0);
+			        }
+				}
+				else {
+					int result = optionPane.showConfirmDialog(null, "Are you sure you want to exit the program?", "Exit",
+				            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (result == JOptionPane.OK_OPTION) {
+						System.exit(0);
+			        }
+				}
 			}
 		});
 	}
@@ -652,6 +667,7 @@ public class AddressBookGUI {
 	public void saveAddressBook() {
 		try {
 			controller.saveAddressBook(file);
+			changesMade = false;
 			displayPopup("Address book has been saved.");
 		} catch (FileNotFoundException e1) {
 			displayPopup("File not found");
