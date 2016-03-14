@@ -278,4 +278,46 @@ public class AddressBookGUITest {
 		
 		assertEquals("Entry should still be in the list", "John Example", gui.listModel.getElementAt(0));
 	}
+	
+	@Test
+	public void testSearchButton() {
+		EasyMock.expect(person1.getFirstName()).andReturn("John").times(2);
+		EasyMock.expect(person1.getLastName()).andReturn("Example").times(2);
+		EasyMock.replay(person1);
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane").once();
+		EasyMock.expect(person2.getLastName()).andReturn("Sample").once();
+		EasyMock.replay(person2);
+		EasyMock.expect(addressBook.getPersons()).andReturn(persons).once();
+		EasyMock.expect(addressBook.getPersons()).andReturn(onePerson).once();
+		addressBook.search(EasyMock.isA(Person.class));
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(addressBook);
+		
+		gui.refreshAddressBook(addressBook);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.searchButton.setEnabled(true);
+		gui.fname.setText("John");
+		gui.searchButton.doClick();
+		
+		EasyMock.verify(addressBook);
+		EasyMock.verify(person1);
+		EasyMock.verify(person2);
+		
+		assertEquals("List should contain only one result", 1, gui.listModel.size());
+		assertEquals("List should show the correct result", "John Example", gui.listModel.getElementAt(0));
+	}
+	
+	@Test
+	public void testEditTitle() {
+		EasyMock.expect(addressBook.getTitle()).andReturn("Old Sample Title").once();
+		addressBook.setTitle("New Sample Title");
+		EasyMock.expectLastCall().once();
+		EasyMock.expect(addressBook.getTitle()).andReturn("New Sample Title").once();
+		EasyMock.replay(addressBook);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.editTitleItem.setEnabled(true);
+		gui.editTitleItem.doClick();
+		
+		assertEquals("Title should have been changed", "New Sample Title", gui.addressBookTitle.getText());
+	}
 }

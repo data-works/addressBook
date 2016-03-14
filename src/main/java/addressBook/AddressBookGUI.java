@@ -463,8 +463,15 @@ public class AddressBookGUI {
 		        } else if(result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
 		        	displayPopup("Search cancelled.");
 		        } else {
-		        	displayPopup("At least one field needs to be filled out to search for a contact.");
-		        }		        		      
+		        	displayPopup("At least one field needs to be filled out to search for a contact.");	        		      
+		        }
+		        fname.setText("");
+		        lname.setText("");
+		        address.setText("");
+		        city.setText("");
+		        state.setText("");
+		        zip.setText("");
+		        phone.setText("");
 			}
 		});
 		
