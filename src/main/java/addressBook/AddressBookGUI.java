@@ -144,7 +144,7 @@ public class AddressBookGUI {
 		addressBookTitle = new JLabel();
 		c.gridx = 0;
 		c.gridy = 0;
-		c.gridwidth = 4;
+		c.gridwidth = 7;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.fill = GridBagConstraints.CENTER;
 		c.anchor = GridBagConstraints.PAGE_START;
@@ -182,6 +182,11 @@ public class AddressBookGUI {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		panel.add(searchButton,c );
 		
+		c.gridx = 6;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(clearSearchButton, c);
+		
 		c.gridx = 0;
 		c.gridy = 2;
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -198,14 +203,17 @@ public class AddressBookGUI {
 		
 		c.gridx = 2;
 		c.gridy = 2;
-		c.gridwidth = 2;
+		c.gridwidth = 5;
 		
 		info = new JPanel(new GridLayout(0, 1));
 		
 		labels = new JLabel[7];
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 4; i++) {
 			labels[i] = new JLabel();
 			info.add(labels[i]);
+			labels[i].setHorizontalAlignment(JLabel.CENTER);
+			labels[i].setVerticalAlignment(JLabel.CENTER);
+			labels[i].setFont(labels[i].getFont().deriveFont(14.0f));
 		}
 		
 		labels[0].setText("Please open an existing address book or create a new one using the File menu.");
@@ -328,7 +336,7 @@ public class AddressBookGUI {
 					if(result == JOptionPane.OK_OPTION) {
 						addressBook.removePersonByIndex(nameList.getSelectedIndex());
 						listModel.removeElementAt(nameList.getSelectedIndex());
-						for (int i = 0; i < 7; i++) {
+						for (int i = 0; i < 4; i++) {
 							labels[i].setText("");
 						}
 						if(listModel.getSize() == 0) {
@@ -351,55 +359,57 @@ public class AddressBookGUI {
 		 */
 		editButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				Person person = addressBook.getPerson(nameList.getSelectedIndex());
-                
-		        fname.setText(person.getFirstName());
-		        lname.setText(person.getLastName());
-		        address.setText(person.getAddress());
-		        city.setText(person.getCity());
-		        state.setText(person.getState());
-		        zip.setText(person.getZip());
-		        phone.setText(person.getPhone());
-		        JPanel panel = new JPanel(new GridLayout(0, 1));
-		        panel.add(new JLabel("First Name:"));
-		        panel.add(fname);
-		        panel.add(new JLabel("Last Name:"));
-		        panel.add(lname);
-		        panel.add(new JLabel("Street Address:"));
-		        panel.add(address);
-		        panel.add(new JLabel("City:"));
-		        panel.add(city);
-		        panel.add(new JLabel("State:"));
-		        panel.add(state);
-		        panel.add(new JLabel("ZIP Code:"));
-		        panel.add(zip);
-		        panel.add(new JLabel("Phone Number:"));
-		        panel.add(phone);
-		        int result = optionPane.showConfirmDialog(null, panel, "Edit Contact",
-		            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-		        if(result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()) {
-		        	person.setFirstName(fname.getText());
-		        	person.setLastName(lname.getText());
-		        	person.setAddress(address.getText());
-		        	person.setCity(city.getText());
-		        	person.setState(state.getText());
-		        	person.setZip(zip.getText());
-		        	person.setPhone(phone.getText());        	
-		        	refreshWithSelection(addressBook, nameList.getSelectedIndex());
-		        	setPerson(person);
-		        	changesMade = true;
-		        } else if(result == JOptionPane.OK_OPTION && (fname.getText().isEmpty() || lname.getText().isEmpty())) {
-		        	displayPopup("First and last name are mandatory fields. Changes were not saved.");
-		        } else {
-		        	displayPopup("Action cancelled. Changes were not saved.");
-		        }
-		        fname.setText("");
-		        lname.setText("");
-		        address.setText("");
-		        city.setText("");
-		        state.setText("");
-		        zip.setText("");
-		        phone.setText("");
+				if(!listModel.isEmpty() && !nameList.isSelectionEmpty()) {
+					Person person = addressBook.getPerson(nameList.getSelectedIndex());
+	                
+			        fname.setText(person.getFirstName());
+			        lname.setText(person.getLastName());
+			        address.setText(person.getAddress());
+			        city.setText(person.getCity());
+			        state.setText(person.getState());
+			        zip.setText(person.getZip());
+			        phone.setText(person.getPhone());
+			        JPanel panel = new JPanel(new GridLayout(0, 1));
+			        panel.add(new JLabel("First Name:"));
+			        panel.add(fname);
+			        panel.add(new JLabel("Last Name:"));
+			        panel.add(lname);
+			        panel.add(new JLabel("Street Address:"));
+			        panel.add(address);
+			        panel.add(new JLabel("City:"));
+			        panel.add(city);
+			        panel.add(new JLabel("State:"));
+			        panel.add(state);
+			        panel.add(new JLabel("ZIP Code:"));
+			        panel.add(zip);
+			        panel.add(new JLabel("Phone Number:"));
+			        panel.add(phone);
+			        int result = optionPane.showConfirmDialog(null, panel, "Edit Contact",
+			            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+			        if(result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()) {
+			        	person.setFirstName(fname.getText());
+			        	person.setLastName(lname.getText());
+			        	person.setAddress(address.getText());
+			        	person.setCity(city.getText());
+			        	person.setState(state.getText());
+			        	person.setZip(zip.getText());
+			        	person.setPhone(phone.getText());        	
+			        	refreshWithSelection(addressBook, nameList.getSelectedIndex());
+			        	setPerson(person);
+			        	changesMade = true;
+			        } else if(result == JOptionPane.OK_OPTION && (fname.getText().isEmpty() || lname.getText().isEmpty())) {
+			        	displayPopup("First and last name are mandatory fields. Changes were not saved.");
+			        } else {
+			        	displayPopup("Action cancelled. Changes were not saved.");
+			        }
+			        fname.setText("");
+			        lname.setText("");
+			        address.setText("");
+			        city.setText("");
+			        state.setText("");
+			        zip.setText("");
+			        phone.setText("");
+				}
 			}
 		});
 		
@@ -454,13 +464,17 @@ public class AddressBookGUI {
 			}
 		});
 		
-		// Clear the search results
+		/**
+		 * TODO: Get method to correctly refresh the list of names back to the normal list.
+		 * Program currently crashes does nothing when trying to clear.
+		 */
 		clearSearchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = optionPane.showConfirmDialog(null, panel, "Clear the search?",
+				int result = optionPane.showConfirmDialog(null, null, "Clear the search?",
 						JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 				if(result == JOptionPane.OK_OPTION) {
 					addressBook = storedAddressBook;
+					refreshAddressBook(addressBook);
 				} else {
 					displayPopup("The search has not been cleared.");
 				}
@@ -583,13 +597,10 @@ public class AddressBookGUI {
 	 */
     public void setPerson(Person p){
     	if (!nameList.isSelectionEmpty()) {
-            labels[0].setText(p.getFirstName());
-            labels[1].setText(p.getLastName());
-            labels[2].setText(p.getAddress());
-            labels[3].setText(p.getCity());
-            labels[4].setText(p.getState());
-            labels[5].setText(p.getZip());
-            labels[6].setText(p.getPhone());
+            labels[0].setText(p.getFirstName() + " " + p.getLastName());
+            labels[1].setText(p.getAddress());
+            labels[2].setText(p.getCity() + ", " + p.getState() + ", " + p.getZip());
+            labels[3].setText(p.getPhone());
     	}
     }
 	
@@ -714,6 +725,7 @@ public class AddressBookGUI {
 		sortByZipButton.setEnabled(bool);
 		editButton.setEnabled(bool);
 		searchButton.setEnabled(bool);
+		clearSearchButton.setEnabled(bool);
 	}
 	
 	
