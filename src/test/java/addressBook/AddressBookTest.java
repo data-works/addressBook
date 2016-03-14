@@ -26,10 +26,6 @@ public class AddressBookTest {
 		addressBook = new AddressBook();
 		addressBook.addPerson(person1);
 		addressBook.addPerson(person2);
-		
-		addressBook = new AddressBook();
-		addressBook.addPerson(person1);
-		addressBook.addPerson(person2);
 	}
 
 	@After
@@ -41,6 +37,12 @@ public class AddressBookTest {
 		person4 = null;
 	}
 
+	@Test
+	public void testCreateAddressBookFromExisting() {	
+		AddressBook newAddressBook = new AddressBook(addressBook);
+		assertEquals("Address book should have been copied", addressBook.getPersons(), newAddressBook.getPersons());
+	}
+	
 	@Test
 	public void testRemovePerson() {
 		addressBook.removePerson(person2);
@@ -75,10 +77,10 @@ public class AddressBookTest {
 		EasyMock.replay(person4);
 		
 		addressBook.sortAddressBookByName();
-		assertEquals("First person sorted correctly", person4, addressBook.getPersons().get(0));
-		assertEquals("Second person sorted correctly", person3, addressBook.getPersons().get(1));
-		assertEquals("Third person sorted correctly", person2, addressBook.getPersons().get(2));
-		assertEquals("Fourth person sorted correctly", person1, addressBook.getPersons().get(3));
+		assertEquals("First person sorted correctly", person4, addressBook.getPerson(0));
+		assertEquals("Second person sorted correctly", person3, addressBook.getPerson(1));
+		assertEquals("Third person sorted correctly", person2, addressBook.getPerson(2));
+		assertEquals("Fourth person sorted correctly", person1, addressBook.getPerson(3));
 	}
 	
 	@Test(expected=NullPointerException.class)

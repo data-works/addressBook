@@ -287,7 +287,7 @@ public class AddressBookGUITest {
 		EasyMock.expect(person2.getFirstName()).andReturn("Jane").once();
 		EasyMock.expect(person2.getLastName()).andReturn("Sample").once();
 		EasyMock.replay(person2);
-		EasyMock.expect(addressBook.getPersons()).andReturn(persons).once();
+		EasyMock.expect(addressBook.getPersons()).andReturn(persons).times(2);
 		EasyMock.expect(addressBook.getPersons()).andReturn(onePerson).once();
 		addressBook.search(EasyMock.isA(Person.class));
 		EasyMock.expectLastCall().once();

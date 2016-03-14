@@ -1,17 +1,9 @@
 package main.java.addressBook;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import javax.swing.JPanel;
 
 /**
  * The Class AddressBook.
@@ -21,10 +13,18 @@ public class AddressBook {
 	private List<Person> persons;
 	private String title;
 	
+	/**
+	 * Instantiates a new address book.
+	 */
 	public AddressBook() {
 		persons = new ArrayList<Person>();
 	}
 	
+	/**
+	 * Instantiates a new address book.
+	 *
+	 * @param ab the addressbook
+	 */
 	public AddressBook(AddressBook ab) {
 		persons = new ArrayList<Person>(ab.getPersons());
 	}

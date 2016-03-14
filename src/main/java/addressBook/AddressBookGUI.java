@@ -42,7 +42,7 @@ public class AddressBookGUI {
 	private JFrame frame;
 	public JMenuBar menuBar;
 	public JMenu menu;
-	private JLabel addressBookTitle;
+	public JLabel addressBookTitle;
 	public JList nameList;
 	public DefaultListModel<String> listModel;
 	public JButton addButton;
@@ -56,7 +56,7 @@ public class AddressBookGUI {
 	private JMenuItem openItem;
 	private JMenuItem saveItem;
 	private JMenuItem saveAsItem;
-	private JMenuItem editTitleItem;
+	public JMenuItem editTitleItem;
 	private JMenuItem printItem;
 	private JMenuItem quitItem;
 	private JScrollPane scrollPane;
@@ -420,13 +420,6 @@ public class AddressBookGUI {
 			public void actionPerformed(ActionEvent e) {
 				
 				Person person = new Person();
-				JTextField fname = new JTextField("");
-		        JTextField lname = new JTextField("");
-		        JTextField address = new JTextField("");
-		        JTextField city = new JTextField("");
-		        JTextField state = new JTextField("");
-		        JTextField zip = new JTextField("");
-		        JTextField phone = new JTextField("");
 		        JPanel panel = new JPanel(new GridLayout(0, 1));
 		        panel.add(new JLabel("First Name:"));
 		        panel.add(fname);
@@ -561,7 +554,7 @@ public class AddressBookGUI {
 		// Edit the title of the addressBook
 		editTitleItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				String title = JOptionPane.showInputDialog("Please edit the title of the address book:", 
+				String title = optionPane.showInputDialog("Please edit the title of the address book:", 
 						addressBook.getTitle());
 				if(title == null) {
 					JOptionPane.showMessageDialog(frame, "Action cancelled. Title has not been changed.");
