@@ -474,7 +474,7 @@ public class AddressBookGUI {
 		 */
 		clearSearchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(null, "Do you want to clear the search?", "Clear Search",
+				int result = optionPane.showConfirmDialog(null, "Do you want to clear the search?", "Clear Search",
 				        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(result == JOptionPane.OK_OPTION) {
 					addressBook = storedAddressBook;
@@ -484,7 +484,6 @@ public class AddressBookGUI {
 				} else {
 					displayPopup("The search has not been cleared.");
 				}
-			
 			}
 		});
 		
@@ -652,6 +651,15 @@ public class AddressBookGUI {
 	 */
 	public void setAddressBook(AddressBook addressBook) {
 		this.addressBook = addressBook;
+	}
+	
+	/**
+	 * Sets the stored address book.
+	 *
+	 * @param addressBook the new stored address book
+	 */
+	public void setStoredAddressBook(AddressBook addressBook) {
+		this.storedAddressBook = addressBook;
 	}
 	
 	/**

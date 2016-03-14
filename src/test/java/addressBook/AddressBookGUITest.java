@@ -317,7 +317,37 @@ public class AddressBookGUITest {
 		gui.setOptionPane(new OkMockOptionPane());
 		gui.editTitleItem.setEnabled(true);
 		gui.editTitleItem.doClick();
+		EasyMock.verify(addressBook);
 		
 		assertEquals("Title should have been changed", "New Sample Title", gui.addressBookTitle.getText());
+	}
+	
+	@Test
+	public void testClearSearch() {
+		EasyMock.expect(person1.getFirstName()).andReturn("John").once();
+		EasyMock.expect(person1.getLastName()).andReturn("Example").once();
+		EasyMock.expect(person1.getFirstName()).andReturn("Name after").once();
+		EasyMock.expect(person1.getLastName()).andReturn("clear").once();
+		EasyMock.replay(person1);
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane").times(2);
+		EasyMock.expect(person2.getLastName()).andReturn("Sample").times(2);
+		EasyMock.replay(person2);
+		EasyMock.expect(addressBook.getPersons()).andReturn(persons).times(2);
+		EasyMock.replay(addressBook);
+		
+		gui.setStoredAddressBook(addressBook);
+		gui.refreshAddressBook(addressBook);
+		
+		assertEquals("Searched person should be displayed", "John Example", gui.listModel.getElementAt(0));
+		
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.clearSearchButton.setEnabled(true);
+		gui.clearSearchButton.doClick();
+		
+		EasyMock.verify(addressBook);
+		EasyMock.verify(person1);
+		EasyMock.verify(person2);
+		
+		assertEquals("Search should have been cleared", "Name after clear", gui.listModel.getElementAt(0));
 	}
 }
