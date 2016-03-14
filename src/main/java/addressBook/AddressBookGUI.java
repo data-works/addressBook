@@ -523,6 +523,7 @@ public class AddressBookGUI {
 						refreshGuiTitle();
 						setMenuEnabled(true);
 						displayMessageNoSelection();
+						hasSavedAs = true;
 					} catch (FileNotFoundException e1) {
 						displayPopup("File not found");
 					} catch (IOException e1) {
@@ -673,7 +674,7 @@ public class AddressBookGUI {
 	}
 	
 	/**
-	 * Refresh gui title.
+	 * Refresh GUI title.
 	 */
 	public void refreshGuiTitle() {
 		this.addressBookTitle.setText(addressBook.getTitle());
@@ -701,6 +702,7 @@ public class AddressBookGUI {
 		    file = fileChooser.getSelectedFile();
 		    saveAddressBook();
 		    hasSavedAs = true;
+		    changesMade = false;
 		}
 	}
 	
