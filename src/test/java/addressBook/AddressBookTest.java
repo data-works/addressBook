@@ -48,6 +48,12 @@ public class AddressBookTest {
 	}
 	
 	@Test
+	public void testRemovePersonByIndex() {
+		addressBook.removePersonByIndex(1);
+		assertFalse("Address book should no longer contain removed person", addressBook.getPersons().contains(person2));
+	}
+	
+	@Test
 	public void testSortAddressBookByName() {
 		addressBook.addPerson(person3);
 		addressBook.addPerson(person4);

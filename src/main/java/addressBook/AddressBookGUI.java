@@ -2,15 +2,12 @@ package main.java.addressBook;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.print.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -48,8 +45,8 @@ public class AddressBookGUI {
 	private JLabel addressBookTitle;
 	public JList nameList;
 	public DefaultListModel<String> listModel;
-	private JButton addButton;
-	private JButton editButton;
+	public JButton addButton;
+	public JButton editButton;
 	public JButton deleteButton;
 	public JButton sortByNameButton;
 	public JButton sortByZipButton;
@@ -67,6 +64,13 @@ public class AddressBookGUI {
 	private ListSelectionModel listSelection;
 	private OptionPane optionPane;
 	private JLabel labels[];
+	public JTextField fname;
+	public JTextField lname;
+	public JTextField address;
+	public JTextField city;
+	public JTextField state;
+	public JTextField zip;
+	public JTextField phone;
 	
 	/**
 	 * Instantiates a new address book GUI.
@@ -96,6 +100,13 @@ public class AddressBookGUI {
 		quitItem = new JMenuItem("Quit", UIManager.getIcon("InternalFrame.paletteCloseIcon"));
 		listModel = new DefaultListModel<>();
 		optionPane = new ConfirmationOptionPane();
+        fname = new JTextField("");
+        lname = new JTextField("");
+        address = new JTextField("");
+        city = new JTextField("");
+        state = new JTextField("");
+        zip = new JTextField("");
+        phone = new JTextField("");
 		
 		//Keyboard shortcuts
 		menu.setMnemonic(KeyEvent.VK_F);
@@ -252,13 +263,6 @@ public class AddressBookGUI {
 		addButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				Person newPerson = new Person();
-		        JTextField fname = new JTextField("");
-		        JTextField lname = new JTextField("");
-		        JTextField address = new JTextField("");
-		        JTextField city = new JTextField("");
-		        JTextField state = new JTextField("");
-		        JTextField zip = new JTextField("");
-		        JTextField phone = new JTextField("");
 		        JPanel panel = new JPanel(new GridLayout(0, 1));
 		        panel.add(new JLabel("First Name:"));
 		        panel.add(fname);
@@ -274,7 +278,7 @@ public class AddressBookGUI {
 		        panel.add(zip);
 		        panel.add(new JLabel("Phone Number:"));
 		        panel.add(phone);
-		        int result = JOptionPane.showConfirmDialog(null, panel, "New Contact",
+		        int result = optionPane.showConfirmDialog(null, panel, "New Contact",
 		            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		        
 		        if(result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()) {
@@ -297,6 +301,13 @@ public class AddressBookGUI {
 		        } else {
 		        	displayPopup("Action cancelled. New contact was not created.");
 		        }
+		        fname.setText("");
+		        lname.setText("");
+		        address.setText("");
+		        city.setText("");
+		        state.setText("");
+		        zip.setText("");
+		        phone.setText("");
 			}
 		});
 		
@@ -305,13 +316,13 @@ public class AddressBookGUI {
 		 */
 		deleteButton.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				if (!listModel.isEmpty() && !nameList.isSelectionEmpty()) {
+				if(!listModel.isEmpty() && !nameList.isSelectionEmpty()) {
 					JPanel panel = new JPanel(new GridLayout(0, 1));
 					JLabel warning = new JLabel("Are you sure you want to delete the selected contact?");
 					panel.add(warning);
 					int result = optionPane.showConfirmDialog(null, panel, "Delete Contact",
 				            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-					if (result == JOptionPane.OK_OPTION) {
+					if(result == JOptionPane.OK_OPTION) {
 						addressBook.removePersonByIndex(nameList.getSelectedIndex());
 						listModel.removeElementAt(nameList.getSelectedIndex());
 						for (int i = 0; i < 7; i++) {
@@ -338,13 +349,13 @@ public class AddressBookGUI {
 			public void actionPerformed(ActionEvent e) {
 				Person person = addressBook.getPerson(nameList.getSelectedIndex());
                 
-		        JTextField fname = new JTextField(person.getFirstName());
-		        JTextField lname = new JTextField(person.getLastName());
-		        JTextField address = new JTextField(person.getAddress());
-		        JTextField city = new JTextField(person.getCity());
-		        JTextField state = new JTextField(person.getState());
-		        JTextField zip = new JTextField(person.getZip());
-		        JTextField phone = new JTextField(person.getPhone());
+		        fname.setText(person.getFirstName());
+		        lname.setText(person.getLastName());
+		        address.setText(person.getAddress());
+		        city.setText(person.getCity());
+		        state.setText(person.getState());
+		        zip.setText(person.getZip());
+		        phone.setText(person.getPhone());
 		        JPanel panel = new JPanel(new GridLayout(0, 1));
 		        panel.add(new JLabel("First Name:"));
 		        panel.add(fname);
@@ -360,9 +371,9 @@ public class AddressBookGUI {
 		        panel.add(zip);
 		        panel.add(new JLabel("Phone Number:"));
 		        panel.add(phone);
-		        int result = JOptionPane.showConfirmDialog(null, panel, "Edit Contact",
+		        int result = optionPane.showConfirmDialog(null, panel, "Edit Contact",
 		            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-		        if (result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()) {
+		        if(result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()) {
 		        	person.setFirstName(fname.getText());
 		        	person.setLastName(lname.getText());
 		        	person.setAddress(address.getText());
@@ -376,7 +387,14 @@ public class AddressBookGUI {
 		        	displayPopup("First and last name are mandatory fields. Changes were not saved.");
 		        } else {
 		        	displayPopup("Action cancelled. Changes were not saved.");
-		        }				
+		        }
+		        fname.setText("");
+		        lname.setText("");
+		        address.setText("");
+		        city.setText("");
+		        state.setText("");
+		        zip.setText("");
+		        phone.setText("");
 			}
 		});
 		
@@ -407,7 +425,7 @@ public class AddressBookGUI {
 		        panel.add(zip);
 		        panel.add(new JLabel("Phone Number:"));
 		        panel.add(phone);
-		        int result = JOptionPane.showConfirmDialog(null, panel, "Search Contact",
+		        int result = optionPane.showConfirmDialog(null, panel, "Search Contact",
 		        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		        
 		        if(result == JOptionPane.OK_OPTION && (!fname.getText().isEmpty() || !lname.getText().isEmpty() ||
@@ -434,8 +452,8 @@ public class AddressBookGUI {
 		// Clear the search results
 		clearSearchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(null, "Clear the search?",
-						"Clear Search", JOptionPane.PLAIN_MESSAGE);
+				int result = optionPane.showConfirmDialog(null, panel, "Clear the search?",
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 				if(result == JOptionPane.OK_OPTION) {
 					addressBook = storedAddressBook;
 				} else {

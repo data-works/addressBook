@@ -1,7 +1,7 @@
 package test.java.addressBook;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class AddressBookGUITest {
 	AddressBook addressBook;
 	AddressBookController controller;
 	Person person1, person2;
-	List<Person> persons;
+	List<Person> persons, onePerson;
 
 	@Before
 	public void setUp() throws Exception {
@@ -37,6 +37,8 @@ public class AddressBookGUITest {
 		persons = new ArrayList<Person>();
 		persons.add(person1);
 		persons.add(person2);
+		onePerson = new ArrayList<Person>();
+		onePerson.add(person1);
 	}
 
 	@After
@@ -138,6 +140,39 @@ public class AddressBookGUITest {
 		assertEquals("Address Book should not contain deleted person", "Jane Sample", 
 				gui.listModel.getElementAt(0));
 	}
+	
+	@Test
+	public void testDeleteButtonLastEntry() {
+		EasyMock.expect(person1.getFirstName()).andReturn("John").times(2);
+		EasyMock.expect(person1.getLastName()).andReturn("Example").times(2);
+		EasyMock.expect(person1.getAddress()).andReturn("123 Street");
+		EasyMock.expect(person1.getCity()).andReturn("Boston");
+		EasyMock.expect(person1.getState()).andReturn("MA");
+		EasyMock.expect(person1.getZip()).andReturn("11111");
+		EasyMock.expect(person1.getPhone()).andReturn("123 456");
+		EasyMock.replay(person1);
+		EasyMock.expect(addressBook.getPersons()).andReturn(onePerson);
+		EasyMock.expect(addressBook.getPerson(0)).andReturn(person1);
+		addressBook.removePersonByIndex(0);
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(addressBook);
+		
+		gui.refreshAddressBook(addressBook);
+		gui.nameList.setSelectedIndex(0);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.deleteButton.setEnabled(true);
+		gui.deleteButton.doClick();
+		
+		EasyMock.verify(addressBook);
+		EasyMock.verify(person1);
+		
+		assertEquals("Address Book should have nobody in it", 0, gui.listModel.size());
+		assertFalse("Delete button should be disabled", gui.deleteButton.isEnabled());
+		assertFalse("Sort by name button should be disabled", gui.sortByNameButton.isEnabled());
+		assertFalse("Sort by zip button should be disabled", gui.sortByZipButton.isEnabled());
+		assertFalse("Edit button should be disabled", gui.editButton.isEnabled());
+		assertFalse("Search button should be disabled", gui.searchButton.isEnabled());
+	}
 
 	@Test
 	public void testDeleteButtonNoSelection() {
@@ -174,5 +209,73 @@ public class AddressBookGUITest {
 		EasyMock.verify(addressBook);
 		
 		assertEquals("Address Book should not have anybody in the list", 0, gui.listModel.size());
+	}
+	
+	@Test
+	public void testAddButton() {
+		EasyMock.expect(addressBook.getPersons()).andReturn(persons);
+		addressBook.addPerson(EasyMock.isA(Person.class));
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(addressBook);
+		
+		EasyMock.expect(person1.getFirstName()).andReturn("Josh");
+		EasyMock.expect(person1.getLastName()).andReturn("Example");
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane");
+		EasyMock.expect(person2.getLastName()).andReturn("Sample");
+		EasyMock.replay(person1);
+		EasyMock.replay(person2);
+		
+		gui.addButton.setEnabled(true);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.fname.setText("John");
+		gui.lname.setText("Sample");
+		gui.addButton.doClick();
+		
+		EasyMock.verify(addressBook);
+	}
+
+	@Test
+	public void testEditButton() {
+		EasyMock.expect(person1.getFirstName()).andReturn("John").times(6);
+		EasyMock.expect(person1.getLastName()).andReturn("Example").times(6);
+		EasyMock.expect(person1.getAddress()).andReturn("123 Street").times(4);
+		EasyMock.expect(person1.getCity()).andReturn("Boston").times(4);
+		EasyMock.expect(person1.getState()).andReturn("MA").times(4);
+		EasyMock.expect(person1.getZip()).andReturn("11111").times(4);
+		EasyMock.expect(person1.getPhone()).andReturn("123 456").times(4);
+		person1.setFirstName("John");
+		EasyMock.expectLastCall().once();
+		person1.setLastName("Example");
+		EasyMock.expectLastCall().once();
+		person1.setAddress("123 Street");
+		EasyMock.expectLastCall().once();
+		person1.setCity("Boston");
+		EasyMock.expectLastCall().once();
+		person1.setState("MA");
+		EasyMock.expectLastCall().once();
+		person1.setZip("11111");
+		EasyMock.expectLastCall().once();
+		person1.setPhone("123 456");
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(person1);
+		
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane").times(2);
+		EasyMock.expect(person2.getLastName()).andReturn("Sample").times(2);
+		EasyMock.replay(person2);
+		
+		EasyMock.expect(addressBook.getPersons()).andReturn(persons).times(2);
+		EasyMock.expect(addressBook.getPerson(0)).andReturn(person1).times(3);
+		EasyMock.replay(addressBook);
+		gui.refreshAddressBook(addressBook);
+		gui.nameList.setSelectedIndex(0);
+		gui.editButton.setEnabled(true);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.editButton.doClick();
+		
+		EasyMock.verify(addressBook);
+		EasyMock.verify(person1);
+		EasyMock.verify(person2);
+		
+		assertEquals("Entry should still be in the list", "John Example", gui.listModel.getElementAt(0));
 	}
 }

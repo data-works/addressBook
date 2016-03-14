@@ -10,6 +10,6 @@ public class ConfirmationOptionPane implements OptionPane  {
      * @see main.java.addressBook.OptionPane#showConfirmDialog(java.awt.Component, java.lang.Object, java.lang.String, int, int)
      */
     public int showConfirmDialog(Component parentComponent, Object message, String title, int optionType, int messageType) {
-       return JOptionPane.showConfirmDialog(parentComponent, message, title, optionType,messageType);
+       return JOptionPane.showConfirmDialog(parentComponent, message, title, optionType, messageType);
     }
 }
