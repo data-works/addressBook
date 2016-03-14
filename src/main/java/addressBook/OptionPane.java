@@ -15,4 +15,13 @@ public interface OptionPane {
 	 * @return the resulting int
 	 */
 	int showConfirmDialog(Component parentComponent, Object message, String title, int optionType, int messageType);
+	
+	/**
+	 * Show input dialog.
+	 *
+	 * @param message the message
+	 * @param title the title
+	 * @return the string
+	 */
+	String showInputDialog(Object message, String title);
 }
