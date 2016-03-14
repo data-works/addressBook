@@ -72,6 +72,7 @@ public class AddressBookGUI {
 	public JTextField zip;
 	public JTextField phone;
 	private boolean changesMade = false;
+	private boolean hasSavedAs = false;
 	
 	/**
 	 * Instantiates a new address book GUI.
@@ -514,19 +515,19 @@ public class AddressBookGUI {
 		// Save the current addressBook under the same name
 		saveItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				saveAddressBook();
+				if (!hasSavedAs) {
+					saveAsAddressBook();
+				}
+				else {
+					saveAddressBook();
+				}
 			}
 		});
 
 		// Save the current addressBook under a different name
 		saveAsItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser();
-				int option = fileChooser.showSaveDialog(frame);
-				if (option == JFileChooser.APPROVE_OPTION) {
-				    file = fileChooser.getSelectedFile();
-				    saveAddressBook();
-				}
+				saveAsAddressBook();
 			}
 		});
 		
@@ -673,6 +674,16 @@ public class AddressBookGUI {
 			displayPopup("File not found");
 		} catch (IOException e1) {
 			displayPopup(e1.getMessage());
+		}
+	}
+	
+	public void saveAsAddressBook() {
+		JFileChooser fileChooser = new JFileChooser();
+		int option = fileChooser.showSaveDialog(frame);
+		if (option == JFileChooser.APPROVE_OPTION) {
+		    file = fileChooser.getSelectedFile();
+		    saveAddressBook();
+		    hasSavedAs = true;
 		}
 	}
 	
