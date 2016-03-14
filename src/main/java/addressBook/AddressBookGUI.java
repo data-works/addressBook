@@ -185,6 +185,7 @@ public class AddressBookGUI {
 		c.gridx = 6;
 		c.gridy = 1;
 		c.fill = GridBagConstraints.HORIZONTAL;
+		clearSearchButton.setEnabled(false);
 		panel.add(clearSearchButton, c);
 		
 		c.gridx = 0;
@@ -345,6 +346,7 @@ public class AddressBookGUI {
 							sortByZipButton.setEnabled(false);
 							editButton.setEnabled(false);
 							searchButton.setEnabled(false);
+							clearSearchButton.setEnabled(false);
 						}
 						changesMade = true;
 			        } else {
@@ -453,14 +455,16 @@ public class AddressBookGUI {
 		        	person.setState(state.getText());
 		        	person.setZip(zip.getText());
 		        	person.setPhone(phone.getText());
+		        	clearSearchButton.setEnabled(true);
+			        searchButton.setEnabled(false);
+			        storedAddressBook = new AddressBook(addressBook);		       
+			        addressBook.search(person);
+			        refreshAddressBook(addressBook);
 		        } else if(result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
 		        	displayPopup("Search cancelled.");
 		        } else {
 		        	displayPopup("At least one field needs to be filled out to search for a contact.");
-		        }
-		        storedAddressBook = addressBook;
-		        addressBook.search(person);
-		        refreshAddressBook(addressBook);
+		        }		        		      
 			}
 		});
 		
@@ -470,11 +474,13 @@ public class AddressBookGUI {
 		 */
 		clearSearchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = optionPane.showConfirmDialog(null, null, "Clear the search?",
-						JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+				int result = JOptionPane.showConfirmDialog(null, "Do you want to clear the search?", "Clear Search",
+				        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(result == JOptionPane.OK_OPTION) {
 					addressBook = storedAddressBook;
 					refreshAddressBook(addressBook);
+					searchButton.setEnabled(true);
+					clearSearchButton.setEnabled(false);
 				} else {
 					displayPopup("The search has not been cleared.");
 				}
@@ -599,7 +605,7 @@ public class AddressBookGUI {
     	if (!nameList.isSelectionEmpty()) {
             labels[0].setText(p.getFirstName() + " " + p.getLastName());
             labels[1].setText(p.getAddress());
-            labels[2].setText(p.getCity() + ", " + p.getState() + ", " + p.getZip());
+            labels[2].setText(p.getCity() + " " + p.getState() + " " + p.getZip());
             labels[3].setText(p.getPhone());
     	}
     }
@@ -725,7 +731,6 @@ public class AddressBookGUI {
 		sortByZipButton.setEnabled(bool);
 		editButton.setEnabled(bool);
 		searchButton.setEnabled(bool);
-		clearSearchButton.setEnabled(bool);
 	}
 	
 	

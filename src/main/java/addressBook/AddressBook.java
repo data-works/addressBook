@@ -24,6 +24,10 @@ public class AddressBook {
 	public AddressBook() {
 		persons = new ArrayList<Person>();
 	}
+	
+	public AddressBook(AddressBook ab) {
+		persons = new ArrayList<Person>(ab.getPersons());
+	}
 
 	/**
 	 * Gets the persons.
