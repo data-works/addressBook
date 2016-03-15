@@ -458,6 +458,8 @@ public class AddressBookGUI {
 		        	person.setPhone(phone.getText());
 		        	clearSearchButton.setEnabled(true);
 			        searchButton.setEnabled(false);
+			        addButton.setEnabled(false);
+			        deleteButton.setEnabled(false);
 			        storedAddressBook = new AddressBook(addressBook);		       
 			        addressBook.search(person);
 			        refreshAddressBook(addressBook);
@@ -484,6 +486,8 @@ public class AddressBookGUI {
 					refreshAddressBook(addressBook);
 					searchButton.setEnabled(true);
 					clearSearchButton.setEnabled(false);
+					addButton.setEnabled(true);
+					deleteButton.setEnabled(true);
 				} else {
 					displayPopup("The search has not been cleared.");
 				}
