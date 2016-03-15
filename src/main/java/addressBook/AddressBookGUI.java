@@ -73,6 +73,7 @@ public class AddressBookGUI {
 	public JTextField phone;
 	private boolean changesMade = false;
 	private boolean hasSavedAs = false;
+	private boolean saveAs = false;
 	
 	/**
 	 * Instantiates a new address book GUI.
@@ -687,6 +688,7 @@ public class AddressBookGUI {
 	 */
 	public void saveAddressBook() {
 		try {
+			controller.setAddressBook(addressBook);
 			controller.saveAddressBook(file);
 			changesMade = false;
 			displayPopup("Address book has been saved.");
@@ -699,6 +701,7 @@ public class AddressBookGUI {
 	
 	public void saveAsAddressBook() {
 		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setSelectedFile(new File(addressBook.getTitle() + ".txt"));
 		int option = fileChooser.showSaveDialog(frame);
 		if (option == JFileChooser.APPROVE_OPTION) {
 		    file = fileChooser.getSelectedFile();
