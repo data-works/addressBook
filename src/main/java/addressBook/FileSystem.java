@@ -44,7 +44,12 @@ public class FileSystem {
 			person.setCity(bufferedReader.readLine().trim());
 			person.setState(bufferedReader.readLine().trim());
 			person.setZip(bufferedReader.readLine().trim());
-			person.setPhone(bufferedReader.readLine().trim());
+			
+			if ((line = bufferedReader.readLine()) != null) {
+				person.setPhone(line.trim());
+			} else {
+				person.setPhone("");
+			}
 
 			// add person to address book
 			addressBook.addPerson(person);
