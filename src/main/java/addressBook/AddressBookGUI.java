@@ -454,6 +454,8 @@ public class AddressBookGUI {
 		        	person.setPhone(phone.getText());
 		        	clearSearchButton.setEnabled(true);
 			        searchButton.setEnabled(false);
+			        addButton.setEnabled(false);
+					deleteButton.setEnabled(false);
 			        storedAddressBook = new AddressBook(addressBook);		       
 			        addressBook.search(person);
 			        refreshAddressBook(addressBook);
@@ -479,9 +481,13 @@ public class AddressBookGUI {
 				        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(result == JOptionPane.OK_OPTION) {
 					addressBook = storedAddressBook;
+					storedAddressBook = null;
+					controller.setAddressBook(addressBook);
 					refreshAddressBook(addressBook);
 					searchButton.setEnabled(true);
 					clearSearchButton.setEnabled(false);
+					addButton.setEnabled(true);
+					deleteButton.setEnabled(true);
 				} else {
 					displayPopup("The search has not been cleared.");
 				}
@@ -693,6 +699,7 @@ public class AddressBookGUI {
 	 */
 	public void saveAddressBook() {
 		try {
+			controller.setAddressBook(addressBook);
 			controller.saveAddressBook(file);
 			changesMade = false;
 			displayPopup("Address book has been saved.");
@@ -708,6 +715,7 @@ public class AddressBookGUI {
 	 */
 	public void saveAsAddressBook() {
 		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setSelectedFile(new File(addressBook.getTitle() + ".txt"));
 		int option = fileChooser.showSaveDialog(frame);
 		if (option == JFileChooser.APPROVE_OPTION) {
 		    file = fileChooser.getSelectedFile();
