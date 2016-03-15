@@ -14,9 +14,9 @@ public class ConfirmationOptionPane implements OptionPane {
     }
     
     /* (non-Javadoc)
-     * @see main.java.addressBook.OptionPane#showInputDialog(java.lang.Object, java.lang.String)
+     * @see main.java.addressBook.OptionPane#showInputDialog(java.awt.Component, java.lang.Object, java.lang.String, int)
      */
-    public String showInputDialog(Object message, String title) {
-    	return JOptionPane.showInputDialog(message, title);
+    public String showInputDialog(Component parentComponent, Object message, String title, int messageType) {
+    	return JOptionPane.showInputDialog(parentComponent, message, title, messageType);
     }
 }

@@ -19,9 +19,11 @@ public interface OptionPane {
 	/**
 	 * Show input dialog.
 	 *
+	 * @param parentComponent the parent component
 	 * @param message the message
 	 * @param title the title
+	 * @param messageType the message type
 	 * @return the string
 	 */
-	String showInputDialog(Object message, String title);
+	String showInputDialog(Component parentComponent, Object message, String title, int messageType);
 }

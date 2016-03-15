@@ -14,12 +14,12 @@ public class OkMockOptionPane extends ConfirmationOptionPane {
 			int messageType) {
 		return JOptionPane.OK_OPTION;
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see main.java.addressBook.ConfirmationOptionPane#showInputDialog(java.lang.Object, java.lang.String)
+	 * @see main.java.addressBook.ConfirmationOptionPane#showInputDialog(java.awt.Component, java.lang.Object, java.lang.String, int)
 	 */
 	@Override
-    public String showInputDialog(Object message, String title) {
-    	return "New Sample Title";
+    public String showInputDialog(Component parentComponent, Object message, String title, int messageType) {
+    	return "New Sample Text";
     }
 }

@@ -1,12 +1,21 @@
 package test.java.addressBook;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
+import java.awt.Component;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFileChooser;
+
 import org.easymock.EasyMock;
+import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +23,7 @@ import org.junit.Test;
 import main.java.addressBook.AddressBook;
 import main.java.addressBook.AddressBookController;
 import main.java.addressBook.AddressBookGUI;
+import main.java.addressBook.CancelMockOptionPane;
 import main.java.addressBook.OkMockOptionPane;
 import main.java.addressBook.Person;
 
@@ -49,6 +59,7 @@ public class AddressBookGUITest {
 		person1 = null;
 		person2 = null;
 		persons = null;
+		onePerson = null;
 	}
 
 	@Test
@@ -310,16 +321,16 @@ public class AddressBookGUITest {
 	@Test
 	public void testEditTitle() {
 		EasyMock.expect(addressBook.getTitle()).andReturn("Old Sample Title").once();
-		addressBook.setTitle("New Sample Title");
+		addressBook.setTitle("New Sample Text");
 		EasyMock.expectLastCall().once();
-		EasyMock.expect(addressBook.getTitle()).andReturn("New Sample Title").once();
+		EasyMock.expect(addressBook.getTitle()).andReturn("New Sample Text").once();
 		EasyMock.replay(addressBook);
 		gui.setOptionPane(new OkMockOptionPane());
 		gui.editTitleItem.setEnabled(true);
 		gui.editTitleItem.doClick();
 		EasyMock.verify(addressBook);
 		
-		assertEquals("Title should have been changed", "New Sample Title", gui.addressBookTitle.getText());
+		assertEquals("Title should have been changed", "New Sample Text", gui.addressBookTitle.getText());
 	}
 	
 	@Test
@@ -349,5 +360,86 @@ public class AddressBookGUITest {
 		EasyMock.verify(person2);
 		
 		assertEquals("Search should have been cleared", "Name after clear", gui.listModel.getElementAt(0));
+	}
+
+	@Test
+	public void testNewItem() {
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.newItem.setEnabled(true);
+		gui.newItem.doClick();
+
+		assertThat("A new address book should have been created", addressBook, not(gui.getAddressBook()));
+		assertEquals("Title should have been set", "New Sample Text", gui.addressBookTitle.getText());
+	}
+	
+	@Test
+	public void testCancelQuit() {
+		gui.setOptionPane(new CancelMockOptionPane());
+		gui.quitItem.setEnabled(true);
+		gui.quitItem.doClick();
+		assertEquals("Ensure program has not been closed", addressBook, gui.getAddressBook());
+	}
+	
+	@Test
+	public void testCancelQuitWithChanges() {
+		gui.changesMade = true;
+		gui.setOptionPane(new CancelMockOptionPane());
+		gui.quitItem.setEnabled(true);
+		gui.quitItem.doClick();
+		assertEquals("Ensure program has not been closed", addressBook, gui.getAddressBook());
+	}
+	
+	@Test
+	public void testOpenItem() throws FileNotFoundException, IOException {
+		JFileChooser fileChooser = EasyMock.createMock("fileChooser", JFileChooser.class);
+		File file = EasyMock.createMock("file", File.class);
+		gui.setFileChooser(fileChooser);
+		
+		EasyMock.expect(fileChooser.showOpenDialog(EasyMock.isA(Component.class))).andReturn(JFileChooser.APPROVE_OPTION).once();
+		EasyMock.expect(fileChooser.getSelectedFile()).andReturn(file).once();
+		EasyMock.replay(fileChooser);
+		
+		EasyMock.expect(controller.getAddressBook()).andReturn(addressBook).once();
+		controller.loadAddressBook(file);
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(file);
+		EasyMock.replay(controller);
+		
+		EasyMock.expect(addressBook.getPersons()).andReturn(persons).times(2);
+		EasyMock.expect(addressBook.getTitle()).andReturn("New Sample Title");
+		EasyMock.replay(addressBook);
+		
+		EasyMock.expect(person1.getFirstName()).andReturn("John");
+		EasyMock.expect(person1.getLastName()).andReturn("Example");
+		EasyMock.replay(person1);
+		
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane");
+		EasyMock.expect(person2.getLastName()).andReturn("Sample");
+		EasyMock.replay(person2);
+		
+		gui.openItem.doClick();
+		
+		assertEquals("New address book should have been loaded", "New Sample Title", gui.addressBookTitle.getText());
+		
+		EasyMock.verify(fileChooser);
+		EasyMock.verify(file);
+		EasyMock.verify(controller);
+		EasyMock.verify(addressBook);
+		EasyMock.verify(person1);
+		EasyMock.verify(person2);
+	}
+	
+	@Test
+	public void testOpenItemCancel() {
+		JFileChooser fileChooser = EasyMock.createMock("fileChooser", JFileChooser.class);
+		gui.setFileChooser(fileChooser);
+		EasyMock.expect(fileChooser.showOpenDialog(EasyMock.isA(Component.class))).andReturn(JFileChooser.CANCEL_OPTION).once();
+		EasyMock.replay(fileChooser);
+		gui.openItem.doClick();
+		
+		assertEquals("No new address book should have been loaded", addressBook, gui.getAddressBook());
+		assertEquals("No title should be displayed", "", gui.addressBookTitle.getText());
+		
+		EasyMock.verify(fileChooser);
 	}
 }
