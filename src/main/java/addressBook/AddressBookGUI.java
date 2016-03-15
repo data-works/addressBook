@@ -478,6 +478,8 @@ public class AddressBookGUI {
 				        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(result == JOptionPane.OK_OPTION) {
 					addressBook = storedAddressBook;
+					storedAddressBook = null;
+					controller.setAddressBook(addressBook);
 					refreshAddressBook(addressBook);
 					searchButton.setEnabled(true);
 					clearSearchButton.setEnabled(false);
