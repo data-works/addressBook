@@ -121,32 +121,32 @@ public class AddressBook {
 		
 		int itemCount = 0;
 		for(Person p : persons) {
-			if(person.getFirstName() != null && p.getFirstName() != null 
+			if(person.getFirstName() != null && !person.getFirstName().isEmpty() && p.getFirstName() != null 
 					&& p.getFirstName().toLowerCase().contains(person.getFirstName().toLowerCase())) {
 				itemCount++;
 			}
 			if(itemCount < contentCount 
-					&& person.getLastName() != null	&& p.getLastName() != null 
+					&& person.getLastName() != null	&& !person.getLastName().isEmpty() && p.getLastName() != null 
 					&& p.getLastName().toLowerCase().contains(person.getLastName().toLowerCase())) {
 				itemCount++;
 			}
-			if(itemCount < contentCount && person.getAddress() != null && p.getAddress() != null 
+			if(itemCount < contentCount && person.getAddress() != null && !person.getAddress().isEmpty() && p.getAddress() != null 
 					&& p.getAddress().toLowerCase().contains(person.getAddress().toLowerCase())) {
 				itemCount++;
 			}
-			if(itemCount < contentCount && person.getCity() != null && p.getCity() != null 
+			if(itemCount < contentCount && person.getCity() != null && !person.getCity().isEmpty() && p.getCity() != null 
 					&& p.getCity().toLowerCase().contains(person.getCity().toLowerCase())) {
 				itemCount++;
 			}
-			if(itemCount < contentCount && person.getState() != null && p.getState() != null 
+			if(itemCount < contentCount && person.getState() != null && !person.getState().isEmpty() && p.getState() != null 
 					&& p.getState().toLowerCase().contains(person.getState().toLowerCase())) {
 				itemCount++;
 			}
-			if(itemCount < contentCount && person.getZip() != null && p.getZip() != null 
+			if(itemCount < contentCount && person.getZip() != null && !person.getZip().isEmpty() && p.getZip() != null 
 					&& p.getZip().toLowerCase().contains(person.getZip().toLowerCase())) {
 				itemCount++;
 			}
-			if(itemCount < contentCount && person.getPhone() != null && p.getPhone() != null 
+			if(itemCount < contentCount && person.getPhone() != null && !person.getPhone().isEmpty() && p.getPhone() != null 
 					&& p.getPhone().toLowerCase().contains(person.getPhone().toLowerCase())) {
 				itemCount++;
 			}

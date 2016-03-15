@@ -181,7 +181,7 @@ public class Person {
 		
 		for(Field f : getClass().getDeclaredFields()) {
 		    try {
-				if(f.get(this) != null && !f.isSynthetic()) {
+				if(f.get(this) != null && !f.get(this).toString().isEmpty() && !f.isSynthetic()) {
 					count++;
 				}
 			} catch (IllegalArgumentException|IllegalAccessException e) {

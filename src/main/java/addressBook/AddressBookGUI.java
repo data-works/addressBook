@@ -106,13 +106,13 @@ public class AddressBookGUI {
 		quitItem = new JMenuItem("Quit", UIManager.getIcon("InternalFrame.paletteCloseIcon"));
 		listModel = new DefaultListModel<>();
 		optionPane = new ConfirmationOptionPane();
-        fname = new JTextField("");
-        lname = new JTextField("");
-        address = new JTextField("");
-        city = new JTextField("");
-        state = new JTextField("");
-        zip = new JTextField("");
-        phone = new JTextField("");
+        fname = new JTextField();
+        lname = new JTextField();
+        address = new JTextField();
+        city = new JTextField();
+        state = new JTextField();
+        zip = new JTextField();
+        phone = new JTextField();
 		
 		//Keyboard shortcuts
 		menu.setMnemonic(KeyEvent.VK_F);
@@ -317,13 +317,13 @@ public class AddressBookGUI {
 		        } else {
 		        	displayPopup("Action cancelled. New contact was not created.");
 		        }
-		        fname.setText("");
-		        lname.setText("");
-		        address.setText("");
-		        city.setText("");
-		        state.setText("");
-		        zip.setText("");
-		        phone.setText("");
+		        fname.setText(null);
+		        lname.setText(null);
+		        address.setText(null);
+		        city.setText(null);
+		        state.setText(null);
+		        zip.setText(null);
+		        phone.setText(null);
 			}
 		});
 		
@@ -408,13 +408,13 @@ public class AddressBookGUI {
 			        } else {
 			        	displayPopup("Action cancelled. Changes were not saved.");
 			        }
-			        fname.setText("");
-			        lname.setText("");
-			        address.setText("");
-			        city.setText("");
-			        state.setText("");
-			        zip.setText("");
-			        phone.setText("");
+			        fname.setText(null);
+			        lname.setText(null);
+			        address.setText(null);
+			        city.setText(null);
+			        state.setText(null);
+			        zip.setText(null);
+			        phone.setText(null);
 				}
 			}
 		});
@@ -456,7 +456,8 @@ public class AddressBookGUI {
 			        searchButton.setEnabled(false);
 			        addButton.setEnabled(false);
 					deleteButton.setEnabled(false);
-			        storedAddressBook = new AddressBook(addressBook);		       
+			        storedAddressBook = new AddressBook(addressBook);		  
+			        // TODO: Add alert if no results?
 			        addressBook.search(person);
 			        refreshAddressBook(addressBook);
 		        } else if(result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
@@ -464,13 +465,13 @@ public class AddressBookGUI {
 		        } else {
 		        	displayPopup("At least one field needs to be filled out to search for a contact.");	        		      
 		        }
-		        fname.setText("");
-		        lname.setText("");
-		        address.setText("");
-		        city.setText("");
-		        state.setText("");
-		        zip.setText("");
-		        phone.setText("");
+		        fname.setText(null);
+		        lname.setText(null);
+		        address.setText(null);
+		        city.setText(null);
+		        state.setText(null);
+		        zip.setText(null);
+		        phone.setText(null);
 			}
 		});
 		
