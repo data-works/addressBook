@@ -194,7 +194,7 @@ public class AddressBookTest {
 		
 		Person searchedPerson = EasyMock.createMock("searchedPerson", Person.class); 
 		
-		EasyMock.expect(searchedPerson.getFirstName()).andReturn(null).times(2);
+		EasyMock.expect(searchedPerson.getFirstName()).andReturn("").times(4);
 		EasyMock.expect(searchedPerson.getLastName()).andReturn("Smith").times(6);
 		EasyMock.expect(searchedPerson.getAddress()).andReturn(null);
 		EasyMock.expect(searchedPerson.getCity()).andReturn(null);

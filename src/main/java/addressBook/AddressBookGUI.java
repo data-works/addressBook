@@ -499,11 +499,11 @@ public class AddressBookGUI {
 		newItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
 				String title = optionPane.showInputDialog(null, "Please enter the title of the new address book:",
-						"Title", JOptionPane.PLAIN_MESSAGE);
+						"Title", JOptionPane.PLAIN_MESSAGE, null, null, null);
 				if(title == null) {
-					JOptionPane.showMessageDialog(frame, "Creation of new address book was cancelled.");
+					displayPopup("Creation of new address book was cancelled.");
 				} else if(title.isEmpty()) {
-					JOptionPane.showMessageDialog(frame, "The title cannot be empty. The address book was not created.");
+					displayPopup("The title cannot be empty. The address book was not created.");
 				} else {
 					setAddressBook(new AddressBook());
 					addressBook.setTitle(title);
@@ -562,12 +562,12 @@ public class AddressBookGUI {
 		// Edit the title of the addressBook
 		editTitleItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				String title = optionPane.showInputDialog(null, "Please edit the title of the address book:", 
-						addressBook.getTitle(), JOptionPane.PLAIN_MESSAGE);
+				String title = optionPane.showInputDialog(null, null, "Please edit the title of the address book:", 
+						JOptionPane.PLAIN_MESSAGE, null, null, addressBook.getTitle());
 				if(title == null) {
-					JOptionPane.showMessageDialog(frame, "Action cancelled. Title has not been changed.");
+					displayPopup("Action cancelled. Title has not been changed.");
 				} else if(title.isEmpty()) {
-					JOptionPane.showMessageDialog(frame, "The title cannot be empty. Title has not been changed.");
+					displayPopup("The title cannot be empty. Title has not been changed.");
 				} else {
 					addressBook.setTitle(title);
 					refreshGuiTitle();
@@ -676,7 +676,7 @@ public class AddressBookGUI {
 	 * @param message the message
 	 */
 	public void displayPopup(String message) {
-		JOptionPane.showMessageDialog(frame, message);
+		optionPane.showMessageDialog(frame, message);
 	}
 	
 	/**

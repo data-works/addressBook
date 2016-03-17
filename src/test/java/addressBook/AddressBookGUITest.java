@@ -15,7 +15,6 @@ import java.util.List;
 import javax.swing.JFileChooser;
 
 import org.easymock.EasyMock;
-import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

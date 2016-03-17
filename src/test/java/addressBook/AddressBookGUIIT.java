@@ -3,6 +3,14 @@ package test.java.addressBook;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import java.awt.Component;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.swing.JFileChooser;
+
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +71,6 @@ public class AddressBookGUIIT {
 	
 	@Test
 	public void testSortName() {
-		//gui.setAddressBook(addressBook1);
 		gui.sortByNameButton.setEnabled(true);
 		gui.sortByNameButton.doClick();
 		assertEquals("Address Book should be sorted by name", addressBook1.getPersons().get(0).getLastName(),
@@ -73,7 +80,6 @@ public class AddressBookGUIIT {
 	
 	@Test
 	public void testSortZip() {
-		//gui.setAddressBook(addressBook1);
 		gui.sortByZipButton.setEnabled(true);
 		gui.sortByZipButton.doClick();
 		assertEquals("Address Book should be sorted by ZIP", "12345", gui.getAddressBook().getPersons().get(0).getZip());
@@ -82,8 +88,6 @@ public class AddressBookGUIIT {
 	@Test
 	public void testDeleteButton() {
 		Person tmpPerson = addressBook1.getPerson(0);
-		
-		//gui.setAddressBook(addressBook1);
 		gui.refreshAddressBook(addressBook1);
 		gui.nameList.setSelectedIndex(0);
 		int previousLength = gui.getAddressBook().getPersons().size();
@@ -99,7 +103,6 @@ public class AddressBookGUIIT {
 	
 	@Test
 	public void testDeleteButtonNoSelection() {
-		//gui.setAddressBook(addressBook1);
 		gui.refreshAddressBook(addressBook1);
 		gui.nameList.clearSelection();
 		gui.deleteButton.setEnabled(true);
@@ -153,5 +156,56 @@ public class AddressBookGUIIT {
 		
 		assertEquals("Address book should contain one result", 1, gui.getAddressBook().getPersons().size());
 		assertEquals("List should show the correct result", "Jane A", gui.listModel.getElementAt(0));
+	}
+	
+	@Test
+	public void testEditTitle() {
+		gui.refreshAddressBook(addressBook1);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.editTitleItem.setEnabled(true);
+		gui.editTitleItem.doClick();
+		
+		assertEquals("Title should have been changed", "New Sample Text", gui.addressBookTitle.getText());
+	}
+	
+	@Test
+	public void testClearSearch() {
+		gui.refreshAddressBook(addressBook1);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.searchButton.setEnabled(true);
+		gui.fname.setText("Jane");
+		gui.searchButton.doClick();
+		
+		assertEquals("Address book should contain one result", 1, gui.getAddressBook().getPersons().size());
+		assertEquals("List should show the correct result", "Jane A", gui.listModel.getElementAt(0));
+		
+		gui.clearSearchButton.setEnabled(true);
+		gui.clearSearchButton.doClick();
+		
+		assertEquals("Search should have been cleared, full list displayed", 2, gui.getAddressBook().getPersons().size());
+		assertEquals("Search should have been cleared, correct first person displayed", 
+				"John B", gui.listModel.getElementAt(0));
+	}
+	
+	@Test
+	public void testOpenItem() throws FileNotFoundException, IOException {
+		File file = new File("testBooks/sampleBook.txt");
+		JFileChooser fileChooser = EasyMock.createMock("fileChooser", JFileChooser.class);
+		gui.setFileChooser(fileChooser);
+		
+		EasyMock.expect(fileChooser.showOpenDialog(EasyMock.isA(Component.class))).andReturn(JFileChooser.APPROVE_OPTION).once();
+		EasyMock.expect(fileChooser.getSelectedFile()).andReturn(file).once();
+		EasyMock.replay(fileChooser);
+	
+		gui.openItem.doClick();
+		
+		assertEquals("New address book title should have been loaded", "A Sample Address Book", gui.addressBookTitle.getText());
+		assertEquals("New address book people should have been loaded", 2, gui.getAddressBook().getPersons().size());
+		assertEquals("Correct first person should have been loaded", "123 Sample Road", 
+				gui.getAddressBook().getPerson(0).getAddress());
+		assertEquals("Correct second person should have been loaded", "123 Main Street", 
+				gui.getAddressBook().getPerson(1).getAddress());
+		
+		EasyMock.verify(fileChooser);
 	}
 }
