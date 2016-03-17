@@ -456,6 +456,7 @@ public class AddressBookGUI {
 			        searchButton.setEnabled(false);
 			        addButton.setEnabled(false);
 					deleteButton.setEnabled(false);
+					saveItem.setEnabled(false);
 			        storedAddressBook = new AddressBook(addressBook);		  
 			        // TODO: Add alert if no results?
 			        addressBook.search(person);
@@ -489,6 +490,7 @@ public class AddressBookGUI {
 					clearSearchButton.setEnabled(false);
 					addButton.setEnabled(true);
 					deleteButton.setEnabled(true);
+					saveItem.setEnabled(true);
 				} else {
 					displayPopup("The search has not been cleared.");
 				}
