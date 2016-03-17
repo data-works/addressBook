@@ -562,7 +562,7 @@ public class AddressBookGUI {
 		// Edit the title of the addressBook
 		editTitleItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				String title = optionPane.showInputDialog(null, null, "Please edit the title of the address book:", 
+				String title = optionPane.showInputDialog(null, "Please edit the title of the address book:", "Edit Title", 
 						JOptionPane.PLAIN_MESSAGE, null, null, addressBook.getTitle());
 				if(title == null) {
 					displayPopup("Action cancelled. Title has not been changed.");
