@@ -37,7 +37,7 @@ public class AddressBookGUI {
 
 	private AddressBookController controller;
 	private AddressBook addressBook;
-	private AddressBook storedAddressBook; // for clear search button
+	private AddressBook storedAddressBook;
 	private File file;
 	private JFrame frame;
 	public JMenuBar menuBar;
@@ -51,7 +51,7 @@ public class AddressBookGUI {
 	public JButton sortByNameButton;
 	public JButton sortByZipButton;
 	public JButton searchButton;
-	public JButton clearSearchButton; // TODO
+	public JButton clearSearchButton;
 	public JMenuItem newItem;
 	public JMenuItem openItem;
 	private JMenuItem saveItem;
@@ -63,7 +63,7 @@ public class AddressBookGUI {
 	private JPanel info;
 	private ListSelectionModel listSelection;
 	private OptionPane optionPane;
-	private JLabel labels[];
+	public JLabel labels[];
 	public JTextField fname;
 	public JTextField lname;
 	public JTextField address;
@@ -136,12 +136,6 @@ public class AddressBookGUI {
 		frame.setJMenuBar(menuBar);
 		setMenuEnabled(false);
 		printItem.setEnabled(false);
-		
-		/**
-		 * Begin adding content to GUI
-		 * NOTE: This will change. This is a temporary layout.
-		 * I don't particularly like the Grid Bag Layout, so it is only temporary.
-		 */
 		
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -734,7 +728,6 @@ public class AddressBookGUI {
 	 * Save the address book asking the user for the path and name.
 	 */
 	public void saveAsAddressBook() {
-		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setSelectedFile(new File(addressBook.getTitle() + ".txt"));
 		int option = fileChooser.showSaveDialog(frame);
 		if (option == JFileChooser.APPROVE_OPTION) {

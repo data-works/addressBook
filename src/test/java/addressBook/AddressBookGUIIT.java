@@ -138,6 +138,30 @@ public class AddressBookGUIIT {
 	}
 	
 	@Test
+	public void testAddFirstEmpty() {	
+		gui.refreshAddressBook(addressBook1);
+		gui.addButton.setEnabled(true);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.fname.setText("");
+		gui.lname.setText("Sample");
+		gui.addButton.doClick();
+		
+		assertEquals("No item should have been added", 2, gui.listModel.size());
+	}
+	
+	@Test
+	public void testAddLastEmpty() {	
+		gui.refreshAddressBook(addressBook1);
+		gui.addButton.setEnabled(true);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.fname.setText("John");
+		gui.lname.setText("");
+		gui.addButton.doClick();
+		
+		assertEquals("No item should have been added", 2, gui.listModel.size());
+	}
+	
+	@Test
 	public void testEditButton() {
 		gui.refreshAddressBook(addressBook1);
 		gui.nameList.setSelectedIndex(0);
@@ -243,5 +267,86 @@ public class AddressBookGUIIT {
 		file.delete();
 		
 		EasyMock.verify(fileChooser);
+	}
+	
+	@Test
+	public void testSearch1() {		
+		gui.refreshAddressBook(addressBook1);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.searchButton.setEnabled(true);
+		gui.fname.setText("");
+		gui.lname.setText("A");
+		gui.searchButton.doClick();
+		
+		assertEquals("Address book should contain one result", 1, gui.getAddressBook().getPersons().size());
+		assertEquals("List should show the correct result", "Jane A", gui.listModel.getElementAt(0));
+	}
+	
+	@Test
+	public void testSearch2() {		
+		gui.refreshAddressBook(addressBook1);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.searchButton.setEnabled(true);
+		gui.fname.setText("");
+		gui.lname.setText("");
+		gui.address.setText("Sample");
+		gui.searchButton.doClick();
+		
+		assertEquals("Address book should contain no result", 0, gui.getAddressBook().getPersons().size());
+	}
+	
+	@Test
+	public void testSearch3() {		
+		gui.refreshAddressBook(addressBook1);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.searchButton.setEnabled(true);
+		gui.fname.setText("");
+		gui.lname.setText("");
+		gui.address.setText("");
+		gui.city.setText("Sample");
+		gui.searchButton.doClick();
+		
+		assertEquals("Address book should contain no result", 0, gui.getAddressBook().getPersons().size());
+	}
+	
+	@Test
+	public void testSearch4() {		
+		gui.refreshAddressBook(addressBook1);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.searchButton.setEnabled(true);
+		gui.fname.setText("");
+		gui.lname.setText("");
+		gui.address.setText("");
+		gui.city.setText("");
+		gui.zip.setText("Sample");
+		gui.searchButton.doClick();
+		
+		assertEquals("Address book should contain no result", 0, gui.getAddressBook().getPersons().size());
+	}
+	
+	@Test
+	public void testSearch5() {		
+		gui.refreshAddressBook(addressBook1);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.searchButton.setEnabled(true);
+		gui.fname.setText("");
+		gui.lname.setText("");
+		gui.address.setText("");
+		gui.city.setText("");
+		gui.zip.setText("");
+		gui.phone.setText("Sample");
+		gui.searchButton.doClick();
+		
+		assertEquals("Address book should contain no result", 0, gui.getAddressBook().getPersons().size());
+	}
+	
+	@Test
+	public void testSetPerson() {
+		Person person = new Person();
+		gui.nameList.clearSelection();
+		gui.setPerson(person);
+		
+		assertEquals("Displayed text should not have changes", 
+				"Please open an existing address book or create a new one using the File menu.", gui.labels[0].getText());
 	}
 }

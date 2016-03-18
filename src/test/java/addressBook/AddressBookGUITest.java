@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -479,7 +480,6 @@ public class AddressBookGUITest {
 	
 	@Test
 	public void testDisplayPopup() {
-		
 		OptionPane optionPane = EasyMock.createMock("optionPane", OptionPane.class);
 		gui.setOptionPane(optionPane);
 		optionPane.showMessageDialog(EasyMock.isA(Component.class), EasyMock.isA(String.class));
@@ -490,4 +490,80 @@ public class AddressBookGUITest {
 		
 		EasyMock.verify(optionPane);
 	}
+	
+	@Test
+	public void testSave() throws IOException {
+		gui.setOptionPane(new OkMockOptionPane());
+		controller.setAddressBook(addressBook);
+		EasyMock.expectLastCall().once();
+		controller.saveAddressBook(null);
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(controller);
+
+		gui.saveAddressBook();
+		EasyMock.verify(controller);
+	}
+	
+	@Test
+	public void testSaveAsCancel() throws IOException {
+		JFileChooser fileChooser = EasyMock.createMock("fileChooser", JFileChooser.class);
+		gui.setFileChooser(fileChooser);
+		fileChooser.setSelectedFile(EasyMock.isA(File.class));
+		EasyMock.expectLastCall().once();
+		EasyMock.expect(fileChooser.showSaveDialog(EasyMock.isA(Component.class))).andReturn(JFileChooser.CANCEL_OPTION).once();
+		EasyMock.replay(fileChooser);
+		
+		gui.saveAsAddressBook();
+		
+		EasyMock.verify(fileChooser);
+	}
+	
+	@Test
+	public void testSaveException() throws IOException {
+		gui.setOptionPane(new OkMockOptionPane());
+		controller.setAddressBook(addressBook);
+		EasyMock.expectLastCall().once();
+		controller.saveAddressBook(null);
+		EasyMock.expectLastCall().andThrow(new FileNotFoundException()).once();
+		EasyMock.replay(controller);
+
+		gui.saveAddressBook();
+		EasyMock.verify(controller);
+	}
+	
+	@Test
+	public void testSaveException2() throws IOException {
+		gui.setOptionPane(new OkMockOptionPane());
+		controller.setAddressBook(addressBook);
+		EasyMock.expectLastCall().once();
+		controller.saveAddressBook(null);
+		EasyMock.expectLastCall().andThrow(new IOException()).once();
+		EasyMock.replay(controller);
+
+		gui.saveAddressBook();
+		EasyMock.verify(controller);
+	}
+	
+	@Test
+	public void testSaveAs() throws IOException {
+		File file = EasyMock.createMock("file", File.class);
+		JFileChooser fileChooser = EasyMock.createMock("fileChooser", JFileChooser.class);
+		gui.setFileChooser(fileChooser);
+		fileChooser.setSelectedFile(EasyMock.isA(File.class));
+		EasyMock.expectLastCall().once();
+		EasyMock.expect(fileChooser.showSaveDialog(EasyMock.isA(Component.class))).andReturn(JFileChooser.APPROVE_OPTION).once();
+		EasyMock.expect(fileChooser.getSelectedFile()).andReturn(file).once();
+		EasyMock.replay(fileChooser);
+
+		gui.setOptionPane(new OkMockOptionPane());
+		controller.setAddressBook(addressBook);
+		EasyMock.expectLastCall().once();
+		controller.saveAddressBook(file);
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(controller);
+
+		gui.saveAsAddressBook();
+		EasyMock.verify(controller);
+		EasyMock.verify(fileChooser);
+	}	
 }
