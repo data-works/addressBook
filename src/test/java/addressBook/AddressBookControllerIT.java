@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,13 +21,14 @@ public class AddressBookControllerIT {
 
 	private AddressBookController controller;
 	private AddressBook addressBook;
+	private Person person;
 
 	@Before
 	public void setUp() throws Exception {
 		controller = new AddressBookController();
 		addressBook = new AddressBook();
 		addressBook.setTitle("testing");
-		Person person = new Person();
+		person = new Person();
 		person.setFirstName("John");
 		addressBook.addPerson(person);
 	}
@@ -35,6 +37,7 @@ public class AddressBookControllerIT {
 	public void tearDown() throws Exception {
 		controller = null;
 		addressBook = null;
+		person = null;
 	}
 
 	@Test(timeout=100)
@@ -67,6 +70,21 @@ public class AddressBookControllerIT {
 
 		assertEquals("Address book title should match", "testing", bufferedReader.readLine().trim());
 		assertEquals("First name should match", "John", bufferedReader.readLine().trim());
+
+		bufferedReader.close();
+		file.delete();
+	}
+	
+	@Test
+	public void testPrintContact() throws IOException {
+		File file = new File("testBooks/tempBook.txt");
+		file.delete();
+		controller.printContact(person, file);
+		
+		FileReader fileReader = new FileReader(file);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+		assertEquals("Name should match", "John", bufferedReader.readLine().trim());
 
 		bufferedReader.close();
 		file.delete();

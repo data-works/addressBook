@@ -57,7 +57,7 @@ public class AddressBookGUI {
 	private JMenuItem saveItem;
 	private JMenuItem saveAsItem;
 	public JMenuItem editTitleItem;
-	private JMenuItem printItem;
+	public JMenuItem printItem;
 	public JMenuItem quitItem;
 	private JScrollPane scrollPane;
 	private JPanel info;
@@ -135,6 +135,7 @@ public class AddressBookGUI {
 		
 		frame.setJMenuBar(menuBar);
 		setMenuEnabled(false);
+		printItem.setEnabled(false);
 		
 		/**
 		 * Begin adding content to GUI
@@ -247,6 +248,7 @@ public class AddressBookGUI {
                 	if (!nameList.isSelectionEmpty()) {
                 		Person person = addressBook.getPerson(nameList.getSelectedIndex());
                 		setPerson(person);
+                		printItem.setEnabled(true);
                 	}
                 }
             }
@@ -259,6 +261,7 @@ public class AddressBookGUI {
 			public void actionPerformed(ActionEvent e) {
 				addressBook.sortAddressBookByName();
 				refreshAddressBook(addressBook);
+				printItem.setEnabled(false);
 			}
 		});
 
@@ -269,6 +272,7 @@ public class AddressBookGUI {
 			public void actionPerformed(ActionEvent e) {
 				addressBook.sortAddressBookByZip();
 				refreshAddressBook(addressBook);
+				printItem.setEnabled(false);
 			}
 		});
 		
@@ -311,6 +315,7 @@ public class AddressBookGUI {
 					sortByZipButton.setEnabled(true);
 					editButton.setEnabled(true);
 					searchButton.setEnabled(true);
+					printItem.setEnabled(false);
 					changesMade = true;
 		        } else if(result == JOptionPane.OK_OPTION && (fname.getText().isEmpty() || lname.getText().isEmpty())) {
 		        	displayPopup("First and last name are mandatory fields. New contact was not created.");
@@ -353,6 +358,7 @@ public class AddressBookGUI {
 							clearSearchButton.setEnabled(false);
 						}
 						changesMade = true;
+						printItem.setEnabled(false);
 			        } else {
 			        	displayPopup("Deletion cancelled.");
 			        }
@@ -458,7 +464,7 @@ public class AddressBookGUI {
 					deleteButton.setEnabled(false);
 					saveItem.setEnabled(false);
 			        storedAddressBook = new AddressBook(addressBook);		  
-			        // TODO: Add alert if no results?
+			        printItem.setEnabled(false);
 			        addressBook.search(person);
 			        refreshAddressBook(addressBook);
 		        } else if(result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
@@ -514,6 +520,7 @@ public class AddressBookGUI {
 					setMenuEnabled(true);
 					displayMessageNoSelection();
 					changesMade = true;
+					printItem.setEnabled(false);
 				}
 			}
 		});
@@ -521,7 +528,6 @@ public class AddressBookGUI {
 		// Open an existing addressBook from a file
 		openItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				//JFileChooser fileChooser = new JFileChooser();
 				int option = fileChooser.showOpenDialog(frame);
 				if (option == JFileChooser.APPROVE_OPTION) {
 				    file = fileChooser.getSelectedFile();
@@ -533,6 +539,7 @@ public class AddressBookGUI {
 						setMenuEnabled(true);
 						displayMessageNoSelection();
 						hasSavedAs = true;
+						printItem.setEnabled(false);
 					} catch (FileNotFoundException e1) {
 						displayPopup("File not found");
 					} catch (IOException e1) {
@@ -581,7 +588,17 @@ public class AddressBookGUI {
 		// Print the current selected contact in the address book
 		printItem.addActionListener(new ActionListener()	{
 			public void actionPerformed(ActionEvent e) {
-				controller.printContact(info);
+				Person person = addressBook.getPerson(nameList.getSelectedIndex());
+				fileChooser.setSelectedFile(new File(person.getFirstName() + person.getLastName() + ".txt"));
+				int option = fileChooser.showSaveDialog(frame);
+				if (option == JFileChooser.APPROVE_OPTION) {
+				    file = fileChooser.getSelectedFile();
+				    try {
+						controller.printContact(person, file);
+					} catch (IOException e1) {
+						displayPopup("Error: " + e1.getStackTrace());
+					}
+				}
 			}
 		});
 		
@@ -747,7 +764,6 @@ public class AddressBookGUI {
 		saveItem.setEnabled(bool);
 		saveAsItem.setEnabled(bool);
 		editTitleItem.setEnabled(bool);
-		printItem.setEnabled(bool);
 		addButton.setEnabled(bool);
 		deleteButton.setEnabled(bool);
 		sortByNameButton.setEnabled(bool);

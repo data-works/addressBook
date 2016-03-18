@@ -143,7 +143,7 @@ public class FileSystemIT {
 	}
 	
 	@Test
-	public void testSaveFileWithNullValueAtTheEnd() throws UnsupportedEncodingException, FileNotFoundException, IOException {
+	public void testSaveFileWithNullValueAtTheEnd() throws IOException {
 		
 		addressBook.addPerson(personWithNullValue);
 		
@@ -162,6 +162,27 @@ public class FileSystemIT {
 		assertEquals("State should match", "FL", bufferedReader.readLine().trim());
 		assertEquals("ZIP should match", "12890", bufferedReader.readLine().trim());
 		assertEquals("Phone should match", "", bufferedReader.readLine().trim());
+
+		bufferedReader.close();
+		file.delete();
+	}
+	
+	@Test
+	public void testSaveContact() throws IOException {
+		
+		File file = new File("testBooks/tempPrint.txt");
+		file.delete();
+		fileSystem.saveContact(person, file);
+		
+		FileReader fileReader = new FileReader(file);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+		assertEquals("Name should match", "Josh Sampleman", bufferedReader.readLine().trim());
+		assertEquals("Address should match", "22 Big Road", bufferedReader.readLine().trim());
+		assertEquals("City should match", "Miami", bufferedReader.readLine().trim());
+		assertEquals("State should match", "FL", bufferedReader.readLine().trim());
+		assertEquals("ZIP should match", "12890", bufferedReader.readLine().trim());
+		assertEquals("Phone should match", "123 234 3456", bufferedReader.readLine().trim());
 
 		bufferedReader.close();
 		file.delete();

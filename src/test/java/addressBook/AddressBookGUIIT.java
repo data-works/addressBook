@@ -4,8 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import java.awt.Component;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -205,6 +207,40 @@ public class AddressBookGUIIT {
 				gui.getAddressBook().getPerson(0).getAddress());
 		assertEquals("Correct second person should have been loaded", "123 Main Street", 
 				gui.getAddressBook().getPerson(1).getAddress());
+		
+		EasyMock.verify(fileChooser);
+	}
+	
+	@Test
+	public void testPrintItem() throws IOException {
+		File file = new File("testBooks/tempPrint.txt");
+		file.delete();
+		
+		gui.refreshAddressBook(addressBook1);
+		gui.nameList.setSelectedIndex(0);
+		
+		JFileChooser fileChooser = EasyMock.createMock("fileChooser", JFileChooser.class);
+		gui.setFileChooser(fileChooser);
+		fileChooser.setSelectedFile(EasyMock.isA(File.class));
+		EasyMock.expectLastCall().once();
+		EasyMock.expect(fileChooser.showSaveDialog(EasyMock.isA(Component.class))).andReturn(JFileChooser.APPROVE_OPTION).once();
+		EasyMock.expect(fileChooser.getSelectedFile()).andReturn(file).once();
+		EasyMock.replay(fileChooser);
+		gui.printItem.setEnabled(true);
+		gui.printItem.doClick();
+		
+		FileReader fileReader = new FileReader(file);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+		assertEquals("Name should match", "John B", bufferedReader.readLine().trim());
+		assertEquals("Address should be blank", "", bufferedReader.readLine().trim());
+		assertEquals("City should be blank", "", bufferedReader.readLine().trim());
+		assertEquals("State should be blank", "", bufferedReader.readLine().trim());
+		assertEquals("ZIP should match", "12346", bufferedReader.readLine().trim());
+		assertEquals("Phone should be blank", "", bufferedReader.readLine().trim());
+
+		bufferedReader.close();
+		file.delete();
 		
 		EasyMock.verify(fileChooser);
 	}

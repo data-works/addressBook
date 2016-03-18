@@ -14,6 +14,7 @@ import org.junit.Test;
 import main.java.addressBook.AddressBook;
 import main.java.addressBook.AddressBookController;
 import main.java.addressBook.FileSystem;
+import main.java.addressBook.Person;
 
 public class AddressBookControllerTest {
 
@@ -21,6 +22,7 @@ public class AddressBookControllerTest {
 	private AddressBook addressBook;
 	private FileSystem fileSystem;
 	private File file;
+	private Person person;
 
 	@Before
 	public void setUp() throws Exception {
@@ -28,6 +30,7 @@ public class AddressBookControllerTest {
 		fileSystem = EasyMock.createMock("FileSystem", FileSystem.class);
 		controller = new AddressBookController();
 		addressBook = EasyMock.createMock("addressBook", AddressBook.class);
+		person = EasyMock.createMock("Person", Person.class);
 	}
 
 	@After
@@ -36,6 +39,7 @@ public class AddressBookControllerTest {
 		addressBook = null;
 		fileSystem = null;
 		file = null;
+		person = null;
 	}
 
 	@Test
@@ -90,5 +94,17 @@ public class AddressBookControllerTest {
 	public void testSetFileSystem() {
 		controller.setFileSystem(fileSystem);
 		assertEquals("Should have set the correct FileSystem", fileSystem, controller.getFileSystem());
+	}
+	
+	@Test
+	public void testPrintContact() throws IOException {
+		controller.setFileSystem(fileSystem);
+		fileSystem.saveContact(person, file);
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(fileSystem);
+		
+		controller.printContact(person, file);
+
+		EasyMock.verify(fileSystem);
 	}
 }

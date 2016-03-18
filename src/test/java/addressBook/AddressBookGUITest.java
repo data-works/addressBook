@@ -24,6 +24,7 @@ import main.java.addressBook.AddressBookController;
 import main.java.addressBook.AddressBookGUI;
 import main.java.addressBook.CancelMockOptionPane;
 import main.java.addressBook.OkMockOptionPane;
+import main.java.addressBook.OptionPane;
 import main.java.addressBook.Person;
 
 public class AddressBookGUITest {
@@ -440,5 +441,53 @@ public class AddressBookGUITest {
 		assertEquals("No title should be displayed", "", gui.addressBookTitle.getText());
 		
 		EasyMock.verify(fileChooser);
+	}
+	
+	@Test
+	public void testPrintItemCancel() {
+		EasyMock.expect(person1.getFirstName()).andReturn("John").times(3);
+		EasyMock.expect(person1.getLastName()).andReturn("Example").times(3);
+		EasyMock.expect(person1.getAddress()).andReturn("123 Street");
+		EasyMock.expect(person1.getCity()).andReturn("Boston");
+		EasyMock.expect(person1.getState()).andReturn("MA");
+		EasyMock.expect(person1.getZip()).andReturn("11111");
+		EasyMock.expect(person1.getPhone()).andReturn("123 456");
+		EasyMock.replay(person1);
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane");
+		EasyMock.expect(person2.getLastName()).andReturn("Sample");
+		EasyMock.replay(person2);
+		EasyMock.expect(addressBook.getPersons()).andReturn(persons);
+		EasyMock.expect(addressBook.getPerson(0)).andReturn(person1).times(2);
+		EasyMock.replay(addressBook);
+		
+		gui.refreshAddressBook(addressBook);
+		gui.nameList.setSelectedIndex(0);
+		
+		JFileChooser fileChooser = EasyMock.createMock("fileChooser", JFileChooser.class);
+		gui.setFileChooser(fileChooser);
+		fileChooser.setSelectedFile(EasyMock.isA(File.class));
+		EasyMock.expectLastCall().once();
+		EasyMock.expect(fileChooser.showSaveDialog(EasyMock.isA(Component.class))).andReturn(JFileChooser.CANCEL_OPTION).once();
+		EasyMock.replay(fileChooser);
+		gui.printItem.setEnabled(true);
+		gui.printItem.doClick();
+		
+		EasyMock.verify(fileChooser);
+		EasyMock.verify(person1);
+		EasyMock.verify(person2);
+	}
+	
+	@Test
+	public void testDisplayPopup() {
+		
+		OptionPane optionPane = EasyMock.createMock("optionPane", OptionPane.class);
+		gui.setOptionPane(optionPane);
+		optionPane.showMessageDialog(EasyMock.isA(Component.class), EasyMock.isA(String.class));
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(optionPane);
+		
+		gui.displayPopup("test message");
+		
+		EasyMock.verify(optionPane);
 	}
 }

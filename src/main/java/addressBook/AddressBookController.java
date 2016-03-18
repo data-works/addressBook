@@ -102,36 +102,13 @@ public class AddressBookController {
 		return fileSystem;
 	}
 	
-
 	/**
 	 * Prints the contact.
 	 *
-	 * @param info the info JPanel
+	 * @param person the person
+	 * @throws IOException 
 	 */
-	public void printContact(JPanel info) {
-		PrinterJob pj = PrinterJob.getPrinterJob();
-		  pj.setJobName(" Print Component ");
-
-		  pj.setPrintable(new Printable() {    
-		    public int print(Graphics pg, PageFormat pf, int pageNum) {
-		      if (pageNum > 0) {
-		    	  return Printable.NO_SUCH_PAGE;
-		      }
-
-		      Graphics2D g2 = (Graphics2D) pg;
-		      g2.translate(pf.getImageableX(), pf.getImageableY());
-		      info.paint(g2);
-		      return Printable.PAGE_EXISTS;
-		    }
-		  });
-		  if(pj.printDialog() == false) {
-			  return;
-		  }
-		  
-		  try {
-		        pj.print();
-		  } catch(PrinterException ex) {
-		        // handle exception
-		  }
+	public void printContact(Person person, File file) throws IOException {
+		fileSystem.saveContact(person, file);
 	}
 }

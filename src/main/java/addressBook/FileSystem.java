@@ -137,4 +137,57 @@ public class FileSystem {
 		
 		writer.close();
 	}
+	
+	/**
+	 * Save a contact.
+	 *
+	 * @param person the person
+	 * @param file the file
+	 * @throws IOException 
+	 */
+	public void saveContact(Person person, File file) throws IOException {
+		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
+		
+		if(person.getFirstName() != null) {
+			writer.write(person.getFirstName() + " ");
+		}
+		
+		if(person.getLastName() != null) {
+			writer.write(person.getLastName() + "\n");
+		} else {
+			writer.write("\n");
+		}
+		
+		if(person.getAddress() != null) {
+			writer.write(person.getAddress() + "\n");
+		} else {
+			writer.write("\n");
+		}
+		
+		if(person.getCity() != null) {
+			writer.write(person.getCity() + "\n");
+		} else {
+			writer.write("\n");
+		}
+		
+		if(person.getState() != null) {
+			writer.write(person.getState() + "\n");
+		} else {
+			writer.write("\n");
+		}
+		
+		if(person.getZip() != null) {
+			writer.write(person.getZip() + "\n");
+		} else {
+			writer.write("\n");
+		}
+		
+		if(person.getPhone() != null) {
+			writer.write(person.getPhone() + "\n");
+		} else {
+			writer.write("\n");
+		}
+		
+		writer.close();
+	}
 }
