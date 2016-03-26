@@ -245,6 +245,52 @@ public class AddressBookGUITest {
 		
 		EasyMock.verify(addressBook);
 	}
+	
+	@Test
+	public void testAddButtonInputValidation() {
+		// EasyMock will throw an AssertionError if addPerson() is called
+		EasyMock.replay(addressBook);
+		
+		EasyMock.expect(person1.getFirstName()).andReturn("Josh");
+		EasyMock.expect(person1.getLastName()).andReturn("Example");
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane");
+		EasyMock.expect(person2.getLastName()).andReturn("Sample");
+		EasyMock.replay(person1);
+		EasyMock.replay(person2);
+		
+		gui.addButton.setEnabled(true);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.fname.setText("John");
+		gui.lname.setText("Sample");
+		gui.zip.setText("12A34");
+		gui.addButton.doClick();
+		
+		EasyMock.verify(addressBook);
+	}
+	
+	@Test
+	public void testAddButtonInputValidation2() {
+		EasyMock.expect(addressBook.getPersons()).andReturn(persons);
+		addressBook.addPerson(EasyMock.isA(Person.class));
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(addressBook);
+		
+		EasyMock.expect(person1.getFirstName()).andReturn("Josh");
+		EasyMock.expect(person1.getLastName()).andReturn("Example");
+		EasyMock.expect(person2.getFirstName()).andReturn("Jane");
+		EasyMock.expect(person2.getLastName()).andReturn("Sample");
+		EasyMock.replay(person1);
+		EasyMock.replay(person2);
+		
+		gui.addButton.setEnabled(true);
+		gui.setOptionPane(new OkMockOptionPane());
+		gui.fname.setText("John");
+		gui.lname.setText("Sample");
+		gui.zip.setText("12345");
+		gui.addButton.doClick();
+		
+		EasyMock.verify(addressBook);
+	}
 
 	@Test
 	public void testEditButton() {
@@ -565,5 +611,5 @@ public class AddressBookGUITest {
 		gui.saveAsAddressBook();
 		EasyMock.verify(controller);
 		EasyMock.verify(fileChooser);
-	}	
+	}
 }

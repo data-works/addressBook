@@ -294,7 +294,8 @@ public class AddressBookGUI {
 		        int result = optionPane.showConfirmDialog(null, panel, "New Contact",
 		            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		        
-		        if(result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()) {
+		        if(result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()
+		        		&& (zip.getText().isEmpty() || zip.getText().matches("^\\d+$"))) {
 		        	newPerson.setFirstName(fname.getText());
 		        	newPerson.setLastName(lname.getText());
 		        	newPerson.setAddress(address.getText());
@@ -313,6 +314,8 @@ public class AddressBookGUI {
 					changesMade = true;
 		        } else if(result == JOptionPane.OK_OPTION && (fname.getText().isEmpty() || lname.getText().isEmpty())) {
 		        	displayPopup("First and last name are mandatory fields. New contact was not created.");
+		        } else if(!zip.getText().isEmpty() && !zip.getText().matches("^\\d+$")) {
+		        	displayPopup("Action cancelled. Invalid ZIP code entered.");
 		        } else {
 		        	displayPopup("Action cancelled. New contact was not created.");
 		        }
@@ -392,7 +395,8 @@ public class AddressBookGUI {
 			        panel.add(phone);
 			        int result = optionPane.showConfirmDialog(null, panel, "Edit Contact",
 			            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-			        if(result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()) {
+			        if(result == JOptionPane.OK_OPTION && !fname.getText().isEmpty() && !lname.getText().isEmpty()
+			        		 && (zip.getText().isEmpty() || zip.getText().matches("^\\d+$"))) {
 			        	person.setFirstName(fname.getText());
 			        	person.setLastName(lname.getText());
 			        	person.setAddress(address.getText());
@@ -405,6 +409,8 @@ public class AddressBookGUI {
 			        	changesMade = true;
 			        } else if(result == JOptionPane.OK_OPTION && (fname.getText().isEmpty() || lname.getText().isEmpty())) {
 			        	displayPopup("First and last name are mandatory fields. Changes were not saved.");
+			        } else if(!zip.getText().isEmpty() && !zip.getText().matches("^\\d+$")) {
+			        	displayPopup("Action cancelled. Invalid ZIP code entered.");
 			        } else {
 			        	displayPopup("Action cancelled. Changes were not saved.");
 			        }
